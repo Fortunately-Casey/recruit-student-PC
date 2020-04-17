@@ -4,18 +4,40 @@
     <div class="content">
       <div class="left">
         <div class="reminder">
-          <div class="reminder-title"></div>
-          <div class="message-list">
-            <div class="message" v-for="(item,index) in 15" :key="index">
+          <div class="reminder-title" v-if="chosedTab === 0"></div>
+          <div class="school-title" v-else></div>
+          <div class="message-list" v-if="chosedTab === 0">
+            <div class="message" v-for="(item,index) in 10" :key="index">
               <div class="voice"></div>永远不要跟别人比幸运，我从来没想过我比别人幸运，我也许比他们更有毅力，在最困难的时候
+            </div>
+          </div>
+          <div class="school-list" v-else>
+            <div class="header">
+              <div class="school-name">学校名称</div>
+              <div class="school-address">学校地址</div>
+              <div class="school-phone">咨询电话</div>
+              <div class="school-service">服务时间</div>
+            </div>
+            <div class="list">
+              <div
+                class="item"
+                v-for="(item,index) in 8"
+                :key="index"
+                :class="index%2==0?'':'highlight'"
+              >
+                <div class="school-name">南通市竹行中学</div>
+                <div class="school-address">南通市开发区新开南路188号</div>
+                <div class="school-phone">81581585</div>
+                <div class="school-service">周一至周五 8:00 - 18:00</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
       <div class="right">
-        <div class="item">
+        <div class="item" :class="chosedTab === 0?'chosed-item':''" @click="chosedTab = 0">
           <div class="title1"></div>
-          <div class="logo1"></div>
+          <div class="logo5"></div>
         </div>
         <div class="item">
           <div class="title2"></div>
@@ -25,7 +47,7 @@
           <div class="title3"></div>
           <div class="logo2"></div>
         </div>
-        <div class="item">
+        <div class="item" :class="chosedTab === 1?'chosed-item':''" @click="chosedTab = 1">
           <div class="title4"></div>
           <div class="logo3"></div>
         </div>
@@ -42,7 +64,9 @@
 import MHeader from "@/components/Header.vue";
 export default {
   data() {
-    return {};
+    return {
+      chosedTab: 0
+    };
   },
   methods: {
     toLogin() {
@@ -71,7 +95,7 @@ export default {
       display: flex;
       .reminder {
         flex: 1;
-        margin: 30px 70px 50px 40px;
+        margin: 30px 70px 30px 40px;
         background-color: #fff;
         background: #ffffff;
         box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
@@ -80,6 +104,14 @@ export default {
           width: 163px;
           height: 37px;
           background: url("../../assets/image/reminder-title.png") no-repeat;
+          background-size: 100% 100%;
+          margin-left: 40px;
+          margin-top: 50px;
+        }
+        .school-title {
+          width: 260px;
+          height: 38px;
+          background: url("../../assets/image/school-phone.png") no-repeat;
           background-size: 100% 100%;
           margin-left: 40px;
           margin-top: 50px;
@@ -109,6 +141,42 @@ export default {
             color: #4299e1;
           }
         }
+        .school-list {
+          padding: 30px 40px;
+          .header {
+            height: 70px;
+            background-color: #64b3ed;
+            display: flex;
+            .school-name,
+            .school-address,
+            .school-phone,
+            .school-service {
+              flex: 1;
+              text-align: center;
+              line-height: 70px;
+              color: #fff;
+              font-size: 18px;
+            }
+          }
+          .list {
+            .item {
+              height: 70px;
+              display: flex;
+              .school-name,
+              .school-address,
+              .school-phone,
+              .school-service {
+                flex: 1;
+                text-align: center;
+                line-height: 70px;
+                font-size: 18px;
+              }
+            }
+            .highlight {
+              background-color: #edf2f7;
+            }
+          }
+        }
       }
     }
     .right {
@@ -134,7 +202,7 @@ export default {
           z-index: 999;
         }
         .title1 {
-          width: 266px;
+          width: 78px;
           height: 27px;
           background: url("../../assets/image/entry-title1.png") no-repeat;
           background-size: 100% 100%;
@@ -166,7 +234,8 @@ export default {
         .logo1,
         .logo2,
         .logo3,
-        .logo4 {
+        .logo4,
+        .logo5 {
           position: absolute;
           right: 0;
           bottom: 0;
@@ -175,6 +244,12 @@ export default {
           width: 96px;
           height: 106px;
           background: url("../../assets/image/entry-logo1.png") no-repeat;
+          background-size: 100% 100%;
+        }
+        .logo5 {
+          width: 104px;
+          height: 104px;
+          background: url("../../assets/image/entry-logo5.png") no-repeat;
           background-size: 100% 100%;
         }
         .logo2 {
@@ -195,6 +270,10 @@ export default {
           background: url("../../assets/image/entry-logo4.png") no-repeat;
           background-size: 100% 100%;
         }
+      }
+      .chosed-item {
+        background: url("../../assets/image/entry-bg-chosed.png") no-repeat;
+        background-size: 100% 100%;
       }
     }
   }
