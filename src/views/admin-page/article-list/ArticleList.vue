@@ -12,7 +12,7 @@
           <DatePicker type="date" placeholder="发布日期" style="width: 200px"></DatePicker>
         </FormItem>
         <FormItem>
-          <Button type="primary">查询</Button>
+          <Button type="primary" @click="print">查询</Button>
         </FormItem>
       </Form>
     </div>
@@ -124,8 +124,12 @@ export default {
     };
   },
   methods: {
-    changePage() {}
-  }
+    changePage() {},
+    print() {
+      
+    }
+  },
+  mounted() {}
 };
 </script>
 

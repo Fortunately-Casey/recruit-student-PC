@@ -4,7 +4,7 @@
     <div class="login-content">
       <div class="login-logo"></div>
       <div class="login-box">
-        <div class="title">填写注册信息</div>
+        <div class="title">{{isShowLogin?"登录":'填写注册信息'}}</div>
         <div class="login-module" v-if="isShowLogin">
           <div class="user">
             <div class="name">手机号码：</div>
@@ -52,6 +52,8 @@
 
 <script>
 import MHeader from "@/components/Header.vue";
+import * as api from "@/service/apiList";
+import http from "@/service/service";
 export default {
   data() {
     return {
@@ -65,23 +67,86 @@ export default {
   },
   methods: {
     confirm() {
-      if (this.userID === "admin") {
-        this.$router.push({
-          path: "/adminPage"
-        });
-      } else if (this.userID === "config") {
-        this.$router.push({
-          path: "/schoolConfig"
-        });
-      } else if (this.userID === "school") {
-        this.$router.push({
-          path: "/schoolManage"
+      if (this.isShowLogin) {
+        let vm = this;
+        if (!vm.userID || !vm.password) {
+          this.$Message["warning"]({
+            background: true,
+            content: "账号密码不能为空！"
+          });
+          return;
+        }
+        let params = {
+          adminUserID: vm.userID,
+          password: vm.password,
+          type: 2
+        };
+        http.post(api.Login, params).then(resp => {
+          if (resp.data.success) {
+            this.$Message["success"]({
+              background: true,
+              content: "登录成功"
+            });
+            window.localStorage.setItem("token", resp.data.data.token);
+            // this.$router.push({
+            //   path: "/index"
+            // });
+          } else {
+            this.$Message["error"]({
+              background: true,
+              content: resp.data.message
+            });
+          }
         });
       } else {
-        this.$router.push({
-          path: "/patriarch"
+        let vm = this;
+        if (!vm.registerID || !vm.registerPW || !vm.confirmPW) {
+          this.$Message["warning"]({
+            background: true,
+            content: "账号密码不能为空！"
+          });
+          return;
+        }
+        let params = {
+          adminUserID: vm.registerID,
+          password: vm.registerPW,
+          confirmPassword: vm.confirmPW
+        };
+        http.post(api.REGISTERED, params).then(resp => {
+          if (resp.data.success) {
+            this.$Message["success"]({
+              background: true,
+              content: "注册成功"
+            });
+            vm.adminUserID = "";
+            vm.password = "";
+            vm.confirmPassword = "";
+            vm.isShowLogin = true;
+          } else {
+            this.$Message["error"]({
+              background: true,
+              content: resp.data.message
+            });
+          }
         });
       }
+      // if (this.userID === "admin") {
+      //   this.$router.push({
+      //     path: "/adminPage"
+      //   });
+      // } else if (this.userID === "config") {
+      //   this.$router.push({
+      //     path: "/schoolConfig"
+      //   });
+      // } else if (this.userID === "school") {
+      //   this.$router.push({
+      //     path: "/schoolManage"
+      //   });
+      // } else {
+      //   this.$router.push({
+      //     path: "/patriarch"
+      //   });
+      // }
     }
   },
   components: {
