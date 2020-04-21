@@ -12,7 +12,11 @@
           </div>
           <div class="password">
             <div class="name">密码：</div>
-            <input type="text" v-model="password" style="-webkit-text-security:disc;text-security:disc;"/>
+            <input
+              type="text"
+              v-model="password"
+              style="-webkit-text-security:disc;text-security:disc;"
+            />
           </div>
         </div>
         <div class="register-module" v-else>
@@ -22,11 +26,19 @@
           </div>
           <div class="password">
             <div class="name">密码：</div>
-            <input type="text" v-model="registerPW" style="-webkit-text-security:disc;text-security:disc;"/>
+            <input
+              type="text"
+              v-model="registerPW"
+              style="-webkit-text-security:disc;text-security:disc;"
+            />
           </div>
           <div class="password">
             <div class="name">确认密码：</div>
-            <input type="text" v-model="confirmPW" style="-webkit-text-security:disc;text-security:disc;"/>
+            <input
+              type="text"
+              v-model="confirmPW"
+              style="-webkit-text-security:disc;text-security:disc;"
+            />
           </div>
         </div>
         <div class="switch">
@@ -51,11 +63,25 @@ export default {
       isShowLogin: true
     };
   },
-  methods:{
+  methods: {
     confirm() {
-      this.$router.push({
-        path:"/patriarch"
-      })
+      if (this.userID === "admin") {
+        this.$router.push({
+          path: "/adminPage"
+        });
+      } else if (this.userID === "config") {
+        this.$router.push({
+          path: "/schoolConfig"
+        });
+      } else if (this.userID === "school") {
+        this.$router.push({
+          path: "/schoolManage"
+        });
+      } else {
+        this.$router.push({
+          path: "/patriarch"
+        });
+      }
     }
   },
   components: {
@@ -65,6 +91,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
+@font-color: #64b3ed;
 #login {
   height: 100%;
   display: flex;
@@ -88,7 +115,7 @@ export default {
       width: 325px;
       position: absolute;
       right: 15%;
-      top: 50%;
+      top: 42%;
       transform: translateY(-50%);
       padding-left: 20px;
       .title {
@@ -162,14 +189,14 @@ export default {
         padding-right: 30px;
         span {
           cursor: pointer;
-          color: #64b3ed;
+          color: @font-color;
         }
       }
       .login-button {
         border-radius: 5px;
         width: 265px;
         height: 40px;
-        background-color: #64b3ed;
+        background-color: @font-color;
         margin: 0 auto;
         color: #fff;
         text-align: center;

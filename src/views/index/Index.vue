@@ -82,6 +82,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
+@font-color: #64b3ed;
 #index {
   height: 100%;
   display: flex;
@@ -145,7 +146,7 @@ export default {
           padding: 30px 40px;
           .header {
             height: 70px;
-            background-color: #64b3ed;
+            background-color: @font-color;
             display: flex;
             .school-name,
             .school-address,

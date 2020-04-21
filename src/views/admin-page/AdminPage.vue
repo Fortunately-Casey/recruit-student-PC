@@ -1,27 +1,25 @@
 <template>
-  <div id="school-manage">
+  <div id="admin-page">
     <div class="top">
       <m-header></m-header>
       <user-info></user-info>
     </div>
     <div class="content">
       <div class="tab-bar">
-        <div class="tab-item" :class="tabIndex === 0?'chosed':''" @click="choseTab(0)">已登记</div>
-        <div class="tab-item" :class="tabIndex === 1?'chosed':''" @click="choseTab(1)">已保存</div>
-        <!-- v-if="tabIndex === 2" -->
+        <div class="tab-item" :class="tabIndex === 0?'chosed':''" @click="choseTab(0)">发文配置</div>
+        <div class="tab-item" :class="tabIndex === 1?'chosed':''" @click="choseTab(1)">学校统计</div>
         <div class="add-item" v-if="tabIndex === 2">
-          新增学生
+          新增发文
           <Icon type="md-close" style="font-size:18px" @click="closeAdd" />
         </div>
-        <div class="add-button" @click="addChild">
-          <Icon type="ios-copy-outline" style="font-size:20px" />新增学生
+        <div class="add-button" @click="addArticle">
+          <Icon type="ios-copy-outline" style="font-size:20px" />新增发文
         </div>
       </div>
       <router-view></router-view>
     </div>
   </div>
 </template>
-
 <script>
 import MHeader from "@/components/Header.vue";
 import UserInfo from "@/components/UserInfo.vue";
@@ -35,13 +33,13 @@ export default {
     let routeName = this.$route.name;
     let tabIndex;
     switch (routeName) {
-      case "schoolAdd":
+      case "addArticle":
         tabIndex = 2;
         break;
-      case "registList":
+      case "articleList":
         tabIndex = 0;
         break;
-      case "savedList":
+      case "schoolStatistics":
         tabIndex = 1;
         break;
     }
@@ -51,25 +49,25 @@ export default {
     closeAdd() {
       this.tabIndex = 0;
       this.$router.push({
-        path: "/schoolManage/registList"
+        path: "/adminPage/articleList"
       });
     },
     choseTab(index) {
       this.tabIndex = index;
       if (index === 0) {
         this.$router.push({
-          path: "/schoolManage/registList"
+          path: "/adminPage/articleList"
         });
       } else if (index === 1) {
         this.$router.push({
-          path: "/schoolManage/savedList"
+          path: "/adminPage/schoolStatistics"
         });
       }
     },
-    addChild() {
+    addArticle() {
       this.tabIndex = 2;
       this.$router.push({
-        path: "/schoolManage/addChild"
+        path: "/adminPage/addArticle"
       });
     }
   },
@@ -79,10 +77,9 @@ export default {
   }
 };
 </script>
-
 <style lang="less" scoped>
-@font-color: #64B3ED;
-#school-manage {
+@font-color: #64b3ed;
+#admin-page {
   height: 100%;
   display: flex;
   flex-direction: column;

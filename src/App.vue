@@ -11,8 +11,9 @@ body {
   min-width: 1680px;
   min-height: 900px;
 }
+@font-color: #64b3ed;
 #app {
-  font-family: "free",Avenir, Helvetica, Arial, sans-serif;
+  font-family: "free", Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
@@ -43,5 +44,27 @@ body {
   height: 50px;
   background-color: #878987;
   -webkit-border-radius: 6px;
+}
+.ivu-page-item:hover {
+  border-color:@font-color !important;
+  background-color:@font-color;
+  a {
+    color: #fff !important;
+  }
+}
+// .ivu-table-header thead tr{
+//   background-color:@font-color !important;
+// }
+.ivu-table th {
+  background-color:@font-color !important;
+}
+.ivu-table-header .ivu-table-cell span {
+  color: #fff !important;
+}
+.ivu-input:hover {
+  border-color:@font-color !important;
+}
+.ivu-input:focus {
+  border-color:@font-color !important;
 }
 </style>

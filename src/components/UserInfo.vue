@@ -35,6 +35,7 @@ export default {
   width: 200px;
   height: 60px;
   position: absolute;
+  z-index: 999;
   right: 0;
   top: 0;
   .user {

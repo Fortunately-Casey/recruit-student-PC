@@ -54,13 +54,14 @@ export default {
 </script>
 
 <style lang="less" scoped>
+@font-color: #64B3ED;
 #child-manage {
   height: 100%;
   display: flex;
   padding-top: 30px;
   .card {
     background: #ffffff;
-    border: 1px solid #64b3ed;
+    border: 1px solid @font-color;
     border-radius: 8px;
     width: 375px;
     height: 286px;
@@ -75,13 +76,13 @@ export default {
       .name {
         flex: 1;
         color: #000;
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 500;
       }
       .code {
         flex: 1;
         font-size: 16px;
-        color: #64b3ed;
+        color: @font-color;
         text-align: right;
       }
     }
@@ -159,10 +160,10 @@ export default {
     cursor: pointer;
     width: 375px;
     height: 286px;
-    border: 2px dashed #64b3ed;
+    border: 2px dashed @font-color;
     border-radius: 8px;
     font-size: 24px;
-    color: #64b3ed;
+    color: @font-color;
     letter-spacing: 0;
     margin-left: 30px;
     .add-icon {

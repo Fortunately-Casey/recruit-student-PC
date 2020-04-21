@@ -225,6 +225,7 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+@font-color: #64B3ED;
 .add-child {
   height: 100%;
   display: flex;
@@ -240,7 +241,7 @@ export default {
       box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
       background: #ffffff;
       border: 1px solid #ccd4df;
-      margin: 40px 20px 0 40px;
+      margin: 20px 20px 0 40px;
       .student-info,
       .house-info,
       .preschool-info {
@@ -248,7 +249,7 @@ export default {
           font-size: 16px;
           font-weight: bold;
           height: 24px;
-          border-left: 4px solid #64b3ed;
+          border-left: 4px solid@font-color;
           padding-left: 15px;
           margin-top: 20px;
         }
@@ -282,7 +283,7 @@ export default {
             flex: 1;
             padding-left: 25px;
             .label {
-              margin: 20px 0;
+              margin: 20px 0 10px 0;
             }
           }
         }
@@ -297,7 +298,7 @@ export default {
           .house-owner {
             flex: 1;
             .label {
-              margin: 20px 0;
+              margin: 20px 0 10px 0;
             }
           }
         }
@@ -307,20 +308,19 @@ export default {
           .get-time {
             width: 33.33%;
             .label {
-              margin: 20px 0;
+              margin: 20px 0 10px 0;
             }
           }
           .house-code {
             flex: 1;
             .label {
-              margin: 20px 0;
+              margin: 20px 0 10px 0;
             }
           }
         }
       }
       .preschool-info {
         flex: 2;
-        margin-top: 20px;
         .school {
           padding-left: 25px;
           .school-name {
@@ -339,7 +339,7 @@ export default {
       box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
       background: #ffffff;
       border: 1px solid #ccd4df;
-      margin: 40px 40px 0 20px;
+      margin: 20px 40px 0 20px;
       .patriarch-info,
       .other-info,
       .report-info {
@@ -348,7 +348,7 @@ export default {
           font-size: 16px;
           font-weight: bold;
           height: 24px;
-          border-left: 4px solid #64b3ed;
+          border-left: 4px solid@font-color;
           padding-left: 15px;
           margin-top: 20px;
         }
@@ -374,14 +374,14 @@ export default {
             .phone {
               width: 33.33%;
               .label {
-                margin: 15px 0;
+                margin: 15px 0 10px 0;
               }
             }
             .work-address {
               flex: 1;
               padding-left: 10px;
               .label {
-                margin: 15px 0;
+                margin: 15px 0 10px 0;
               }
             }
           }
@@ -430,7 +430,7 @@ export default {
       width: 120px;
       height: 40px;
       border-radius: 20px;
-      background-color: #64b3ed;
+      background-color:@font-color;
       line-height: 40px;
       color: #fff;
       text-align: center;
