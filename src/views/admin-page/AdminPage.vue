@@ -12,7 +12,7 @@
           新增发文
           <Icon type="md-close" style="font-size:18px" @click="closeAdd" />
         </div>
-        <div class="add-button" @click="addArticle">
+        <div class="add-button" @click="addArticle" v-if="tabIndex === 0">
           <Icon type="ios-copy-outline" style="font-size:20px" />新增发文
         </div>
       </div>

@@ -7,8 +7,8 @@
           <div class="reminder-title" v-if="chosedTab === 0"></div>
           <div class="school-title" v-else></div>
           <div class="message-list" v-if="chosedTab === 0">
-            <div class="message" v-for="(item,index) in 10" :key="index">
-              <div class="voice"></div>永远不要跟别人比幸运，我从来没想过我比别人幸运，我也许比他们更有毅力，在最困难的时候
+            <div class="message" v-for="(item,index) in newsList" :key="index" @click="toNews(item)">
+              <div class="voice"></div>{{item.title}}
             </div>
           </div>
           <div class="school-list" v-else>
@@ -62,17 +62,39 @@
 
 <script>
 import MHeader from "@/components/Header.vue";
+import * as api from "@/service/apiList";
+import http from "@/service/service";
 export default {
   data() {
     return {
-      chosedTab: 0
+      chosedTab: 0,
+      newsList:[]
     };
   },
+  mounted() {
+    this.$nextTick(function() {
+      this.getNewsList();
+    })
+  },
   methods: {
+    getNewsList() {
+      this.$Spin.show();
+      http.post(api.GETNEWSLIST,{
+        currPage:1,
+        pageSize:100,
+        title:""
+      }).then((resp) => {
+        this.$Spin.hide();
+        this.newsList = resp.data.data; 
+      })
+    },
     toLogin() {
       this.$router.push({
         path: "/login"
       });
+    },
+    toNews(item) {
+      window.open(item.titleUrl);
     }
   },
   components: {
@@ -119,6 +141,8 @@ export default {
         }
         .message-list {
           margin-top: 20px;
+          max-height: 600px;
+          overflow-y: auto;
           .message {
             height: 28px;
             padding-left: 90px;

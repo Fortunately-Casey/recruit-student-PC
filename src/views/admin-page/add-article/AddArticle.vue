@@ -34,29 +34,59 @@
 </template>
 
 <script>
+import * as api from "@/service/apiList";
+import http from "@/service/service";
 export default {
   data() {
     return {
       newsTitle: "",
       url: "",
-      isShowAdd:true,
-      isShowSuccess:false,
-      isShowError:false
+      isShowAdd: true,
+      isShowSuccess: false,
+      isShowError: false
     };
   },
-  methods:{
+  methods: {
     confirm() {
-      this.isShowAdd = false;
-      this.isShowSuccess = true;
+      if (!this.newsTitle) {
+        this.$Message["warning"]({
+          background: true,
+          content: "新闻标题不能为空！"
+        });
+        return;
+      }
+      if (!this.url) {
+        this.$Message["warning"]({
+          background: true,
+          content: "新闻链接不能为空！"
+        });
+        return;
+      }
+      let params = {
+        title: this.newsTitle,
+        titleUrl: this.url
+      };
+      this.$Spin.show();
+      http.post(api.INSRERTNEWSCONFIG, params).then(resp => {
+        this.$Spin.hide();
+        if (resp.data.success) {
+          this.isShowAdd = false;
+          this.isShowSuccess = true;
+        } else {
+          this.isShowError = true;
+        }
+      });
     },
     back() {
       this.$router.push({
-        path:"/adminPage/articleList"
-      })
+        path: "/adminPage/articleList"
+      });
     },
     goOn() {
       this.isShowAdd = true;
       this.isShowSuccess = false;
+      this.newsTitle = "";
+      this.url = "";
     }
   }
 };
@@ -118,7 +148,8 @@ export default {
       }
     }
   }
-  .success-box,.error-box {
+  .success-box,
+  .error-box {
     width: 790px;
     height: 210px;
     background: #ffffff;
@@ -195,7 +226,7 @@ export default {
     text-indent: 10px;
   }
 }
-/deep/.ivu-input {
+/deep/.url-input .ivu-input {
   padding-left: 90px !important;
 }
 </style>

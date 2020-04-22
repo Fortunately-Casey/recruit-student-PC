@@ -2,25 +2,30 @@
   <div id="statistic">
     <div class="left">
       <div class="top">
+        <div class="header">预报名人数统计（街道）</div>
         <div id="chart1"></div>
       </div>
       <div class="bottom">
+        <div class="header">预报名人数统计（有房、无房）</div>
         <div id="chart3"></div>
       </div>
     </div>
     <div class="right">
       <div class="top">
+        <div class="header">预报名人数统计（学校）</div>
         <div id="chart2"></div>
       </div>
       <div class="bottom">
+        <div class="header">预报名人数统计（本省、外省）</div>
         <div id="chart4"></div>
       </div>
     </div>
   </div>
 </template>
-
 <script>
 let echarts = require("echarts");
+import * as api from "@/service/apiList";
+import http from "@/service/service";
 export default {
   data() {
     return {};
@@ -28,20 +33,28 @@ export default {
   mounted() {
     let vm = this;
     this.$nextTick(function() {
-      vm.createStreet();
-      vm.createSchool();
-      vm.createHasHouse();
-      vm.createProvince();
+      this.$Spin.show();
+      http.get(api.SHOWSTATISTICINFO).then(resp => {
+        this.$Spin.hide();
+        let res = resp.data.data;
+        vm.createStreet(res.streetStatistics);
+        vm.createSchool(res.studentStatisticBySchool);
+        vm.createHasHouse(res.studentStatisticByProperty);
+        vm.createProvince(res.studentStatisticsByProvince);
+      });
     });
   },
   methods: {
-    createStreet() {
+    createStreet(data) {
       var myChart = echarts.init(document.getElementById("chart1"));
+      let streetList = [];
+      let dataList = [];
+      data.map(v => {
+        streetList.push(v.streetName);
+        dataList.push(v.count);
+      });
       let option = {
         color: ["#64B3ED"],
-        title: {
-          text: "预报名人数统计（街道）"
-        },
         tooltip: {
           trigger: "axis",
           axisPointer: {
@@ -62,14 +75,7 @@ export default {
               color: "#728096"
             }
           },
-          data: [
-            "江海街道",
-            "老洪港街道",
-            "小海街道",
-            "新开街道",
-            "竹行街道",
-            "中兴街道"
-          ]
+          data: streetList
         },
         yAxis: {
           type: "value",
@@ -90,7 +96,7 @@ export default {
         },
         series: [
           {
-            data: [120, 200, 150, 80, 70, 110],
+            data: dataList,
             type: "bar",
             stack: "人数",
             barWidth: 70
@@ -100,13 +106,16 @@ export default {
       // 使用刚指定的配置项和数据显示图表。
       myChart.setOption(option);
     },
-    createSchool() {
+    createSchool(data) {
       var myChart = echarts.init(document.getElementById("chart2"));
+      let schoolList = [];
+      let dataList = [];
+      data.map(v => {
+        schoolList.push(v.schoolName);
+        dataList.push(v.studentSum);
+      });
       let option = {
         color: "#667FEA",
-        title: {
-          text: "预报名人数统计（学校）"
-        },
         tooltip: {
           trigger: "axis",
           axisPointer: {
@@ -128,17 +137,7 @@ export default {
               color: "#728096"
             }
           },
-          data: [
-            "竹行中学",
-            "东方中学",
-            "通师附小",
-            "竹行小学",
-            "实小新河校区",
-            "实小育才校区",
-            "实小能达校区",
-            "实验小星湖校区",
-            "小海中学"
-          ]
+          data: schoolList
         },
         yAxis: {
           type: "value",
@@ -159,7 +158,7 @@ export default {
         },
         series: [
           {
-            data: [621, 720, 341, 433, 666, 591, 372, 986, 611],
+            data: dataList,
             type: "bar",
             stack: "学校",
             barWidth: 40,
@@ -192,18 +191,65 @@ export default {
       // 使用刚指定的配置项和数据显示图表。
       myChart.setOption(option);
     },
-    createHasHouse() {
+    createHasHouse(data) {
       var myChart = echarts.init(document.getElementById("chart3"));
+      let schoolList = [];
+      let hasHouse = [];
+      let noHouse = [];
+      let dateHouse = [];
+      data.map(v => {
+        schoolList.push(v.schoolName);
+        hasHouse.push(v.propertyNum);
+        if (v.schoolName === "实验小学" || v.schoolName === "东方小学") {
+          noHouse.push(0);
+          dateHouse.push(v.otherNum);
+        } else {
+          noHouse.push(v.otherNum);
+          dateHouse.push(0);
+        }
+        // dataList
+      });
       let option = {
         color: ["#64B3ED", "#F6AD55", "#ED64A6"],
-        title: {
-          text: "预报名人数统计（有房、无房）"
-        },
         tooltip: {
           trigger: "axis",
           axisPointer: {
             // 坐标轴指示器，坐标轴触发有效
             type: "shadow" // 默认为直线，可选为：'line' | 'shadow'
+          },
+          formatter: function(params) {
+            if (
+              params[0].name === "东方小学" ||
+              params[0].name === "实验小学"
+            ) {
+              return (
+                params[0].name +
+                "<br/>" +
+                params[0].marker +
+                params[0].seriesName +
+                "：" +
+                params[0].value +
+                "<br/>" +
+                params[2].marker +
+                params[2].seriesName +
+                "：" +
+                params[2].value
+              );
+            } else {
+              return (
+                params[0].name +
+                "<br/>" +
+                params[0].marker +
+                params[0].seriesName +
+                "：" +
+                params[0].value +
+                "<br/>" +
+                params[1].marker +
+                params[1].seriesName +
+                "：" +
+                params[1].value
+              );
+            }
           }
         },
         legend: {
@@ -228,17 +274,7 @@ export default {
               color: "#728096"
             }
           },
-          data: [
-            "竹行中学",
-            "东方中学",
-            "通师附小",
-            "竹行小学",
-            "实小新河校区",
-            "实小育才校区",
-            "实小能达校区",
-            "实验小星湖校区",
-            "小海中学"
-          ]
+          data: schoolList
         },
         yAxis: {
           type: "value",
@@ -260,7 +296,7 @@ export default {
         series: [
           {
             name: "有房",
-            data: [589, 559, 345, 556, 475, 567, 452, 466, 411],
+            data: hasHouse,
             type: "bar",
             stack: "有房",
             barWidth: 20
@@ -280,7 +316,7 @@ export default {
           },
           {
             name: "无房",
-            data: [120, 0, 12, 12, 2, 9, 8, 19, 4],
+            data: noHouse,
             type: "bar",
             stack: "无房",
             barWidth: 20
@@ -300,7 +336,7 @@ export default {
           },
           {
             name: "期房",
-            data: [0, 36, 0, 0, 0, 0, 0, 0, 0],
+            data: dateHouse,
             type: "bar",
             stack: "期房",
             barWidth: 20,
@@ -311,29 +347,29 @@ export default {
       // 使用刚指定的配置项和数据显示图表。
       myChart.setOption(option);
     },
-    createProvince() {
+    createProvince(data) {
       var myChart = echarts.init(document.getElementById("chart4"));
+      let dataList = [
+        {
+          value: 0,
+          name: "本省"
+        },
+        {
+          value: 0,
+          name: "省外"
+        }
+      ];
+      dataList[0].value = data.localNum;
+      dataList[1].value = data.otherNum;
       let option = {
         color: ["#667FEA", "skyblue"],
-        title: {
-          text: "预报名人数统计（本省、外省）"
-        },
         tooltip: {
           trigger: "item",
           formatter: "人数 <br/>{b} : {c} 人({d}%)"
         },
         series: [
           {
-            data: [
-              {
-                value: 10322,
-                name: "本省"
-              },
-              {
-                value: 1035,
-                name: "省外"
-              }
-            ],
+            data: dataList,
             type: "pie",
             stack: "人数",
             barWidth: 70,
@@ -376,11 +412,20 @@ export default {
       box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
       display: flex;
       padding-top: 10px;
+      flex-direction: column;
       #chart1,
       #chart2,
       #chart3,
       #chart4 {
         flex: 1;
+      }
+      .header {
+        font-size: 18px;
+        font-weight: bold;
+        height: 24px;
+        border-left: 4px solid #64b3ed;
+        padding-left: 15px;
+        margin-top: 5px;
       }
     }
   }

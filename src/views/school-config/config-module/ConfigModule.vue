@@ -22,12 +22,13 @@
             <div class="label">选择时间段</div>
             <el-date-picker
               v-model="value2"
-              type="datetimerange"
+              type="daterange"
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
-              style="width:450px"
+              style="width:400px"
             ></el-date-picker>
+            <Button type="primary" style="margin-left:20px" @click="commitDate">提交</Button>
           </div>
         </div>
         <div class="level-config">
@@ -40,8 +41,8 @@
             </div>
             <div class="level-list">
               <div class="level-item" v-for="(item,index) in levelList" :key="index">
-                {{item}}
-                <Icon type="md-close" />
+                {{item.level}}
+                <Icon type="md-close" @click="deleteLevel(item)" />
               </div>
             </div>
           </div>
@@ -51,87 +52,368 @@
         <div class="relation-config">
           <div class="header">小区学校对应关系配置</div>
           <div class="relation">
-            <el-transfer
-              filterable
-              :filter-method="filterMethod"
-              :titles="['小区列表', '已选择小区']"
-              filter-placeholder="请输入小区名称"
-              v-model="value"
-              :data="data"
-            ></el-transfer>
-            <div class="label">新增小区</div>
-            <div class="add-input">
-              <Input v-model="estate" size="large" style="width:450px" />
-              <div class="add" @click="addEstate">添加</div>
+            <div class="add">
+              <Button type="primary" @click="add">新增</Button>
             </div>
-            <div class="estate-list">
-              <div class="estate-item" v-for="(item,index) in estateList" :key="index">
-                {{item}}
-                <span>删除</span>
-              </div>
+            <div class="list">
+              <Table :columns="columns" :data="list"></Table>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="bottom">
-      <div class="confirm-button">提交</div>
-    </div>
+    <div class="bottom"></div>
+    <Modal v-model="isShowAdd" title="新增小区" @on-cancel="cancel">
+      <Form :model="formItem" :label-width="100" style="width:400px">
+        <FormItem label="学区">
+          <Select v-model="formItem.boundaryID" placeholder="选择学区">
+            <Option :value="item.id" v-for="(item,index) in boundaryList" :key="index">{{item.name}}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="街道">
+          <Select v-model="formItem.streetName" placeholder="选择街道" @on-change="streetChange">
+            <Option
+              :value="item.streetID"
+              v-for="(item,index) in streetList"
+              :key="index"
+            >{{item.streetName}}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="社区">
+          <Select v-model="formItem.communityID" placeholder="选择社区">
+            <Option
+              :value="item.streetID"
+              v-for="(item,index) in communityList"
+              :key="index"
+            >{{item.name}}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="小区">
+          <Input v-model="formItem.smallCommunityName" placeholder="请输入小区" />
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="isShowAdd=false">取消</Button>
+        <Button type="primary" size="large" @click="commitAdd">确定</Button>
+      </div>
+    </Modal>
+    <Modal v-model="isShowDelete" title="删除小区" @on-cancel="isShowDelete = false">
+      <p>确认要删除该小区么？</p>
+      <div slot="footer">
+        <Button type="text" size="large" @click="isShowDelete=false">取消</Button>
+        <Button type="primary" size="large" @click="commitDelete">确定</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 
 <script>
+import * as api from "@/service/apiList";
+import { Todate } from "@/common/tool/tool";
+import http from "@/service/service";
 export default {
   data() {
     return {
       value1: "",
       value2: "",
-      levelList: ["A+", "A", "B", "C"],
+      levelList: [],
       level: "",
-      value: [],
-      estate: "",
-      data: this.generateData(),
-      estateList: ["棕榈湾"]
+      columns: [
+        {
+          title: "街道",
+          key: "streetName",
+          align: "center"
+        },
+        {
+          title: "社区",
+          key: "communityName",
+          align: "center"
+        },
+        {
+          title: "学区",
+          key: "boundaryName",
+          align: "center",
+          width: 300
+        },
+        {
+          title: "小区",
+          key: "smallCommunityName",
+          align: "center"
+        },
+        {
+          title: "操作",
+          key: "option",
+          align: "center",
+          render: (h, params) => {
+            return params.row.status === 1
+              ? h("div", [
+                  h(
+                    "Button",
+                    {
+                      props: {
+                        type: "error",
+                        size: "small"
+                      },
+                      style: {
+                        // marginLeft: "10px"
+                      },
+                      on: {
+                        click: () => {
+                          this.deleteSmallCommunity(params);
+                        }
+                      }
+                    },
+                    "删除"
+                  )
+                ])
+              : "";
+          }
+        }
+      ],
+      isShowAdd: false,
+      isShowDelete: false,
+      deleteID: "",
+      list: [],
+      formItem: {
+        boundaryID: "",
+        streetName: "",
+        communityID: "",
+        smallCommunityName: ""
+      },
+      streetList: [],
+      communityList: [],
+      boundaryList: []
     };
   },
+  mounted() {
+    this.$nextTick(function() {
+      // 获取所有配置信息
+      this.getConfig();
+    });
+    // 获取街道信息
+    this.getStreetList();
+    // 获取界限信息
+    this.getBoundaryList();
+  },
   methods: {
-    generateData() {
-      const data = [];
-      const cities = [
-        "棕榈湾",
-        "碧桂园",
-        "尚海城",
-        "万通城",
-        "翠湖湾",
-        "翰景园",
-        "佳期漫"
-      ];
-      const pinyin = [
-        "zonglvwan",
-        "biguiyuan",
-        "shanghaicheng",
-        "wantongcheng",
-        "cuihuwan",
-        "hanjingyuan",
-        "jiaqiman"
-      ];
-      cities.forEach((city, index) => {
-        data.push({
-          label: city,
-          key: index,
-          pinyin: pinyin[index]
-        });
+    getStreetList() {
+      http.get(api.GETSTREETLIST).then(resp => {
+        this.streetList = resp.data.data;
       });
-      return data;
     },
-    filterMethod(query, item) {
-      return item.pinyin.indexOf(query) > -1;
+    getBoundaryList() {
+      http.get(api.GETBOUNDARYLIST).then(resp => {
+        this.boundaryList = resp.data.data;
+      });
+    },
+    streetChange(id) {
+      this.$Spin.show();
+      http
+        .get(api.GETCOMMUNITYLIST, {
+          streetID: id
+        })
+        .then(resp => {
+          this.$Spin.hide();
+          this.communityList = resp.data.data;
+        });
+    },
+    getConfig() {
+      let vm = this;
+      this.$Spin.show();
+      http.get(api.GETSCHOOLCONFIG).then(resp => {
+        this.$Spin.hide();
+        vm.value1 = [
+          new Date(resp.data.data.school.enterSchoolBeginDate),
+          new Date(resp.data.data.school.enterSchoolEndDate)
+        ];
+        vm.value2 = [
+          new Date(resp.data.data.school.birthdayLimitStartDate),
+          new Date(resp.data.data.school.birthdayLimitEndDate)
+        ];
+        vm.levelList = resp.data.data.levelConfigs;
+        vm.list = resp.data.data.communityInformation;
+      });
+    },
+    commitDate() {
+      let params = {
+        enterSchoolBeginDate: this.toDate(this.value1[0]),
+        enterSchoolEndDate: this.toDate(this.value1[1]),
+        birthdayLimitStartDate: this.toDate(this.value2[0]),
+        birthdayLimitEndDate: this.toDate(this.value2[1])
+      };
+      if (!this.value1) {
+        this.$Message["warning"]({
+          background: true,
+          content: "请选择出生年月日"
+        });
+        return;
+      } else if (!this.value2) {
+        this.$Message["warning"]({
+          background: true,
+          content: "请选择报名时间"
+        });
+        return;
+      }
+      this.$Spin.show();
+      http.post(api.SCHOOLINFORMATIONCONFIG, params).then(resp => {
+        this.$Spin.hide();
+        if (resp.data.success) {
+          this.$Message["success"]({
+            background: true,
+            content: "提交成功"
+          });
+          this.getConfig();
+        } else {
+          this.$Message["error"]({
+            background: true,
+            content: resp.data.data
+          });
+        }
+      });
+    },
+    toDate(date) {
+      return Todate(date);
     },
     addLevel() {
-      this.levelList.push(this.level);
+      let vm = this;
+      if (!vm.level) {
+        this.$Message["warning"]({
+          background: true,
+          content: "请输入等级！"
+        });
+        return;
+      }
+      this.$Spin.show();
+      http
+        .post(api.INSERTLEVELCONFIG, {
+          level: vm.level
+        })
+        .then(resp => {
+          this.$Spin.hide();
+          if (resp.data.success) {
+            this.$Message["success"]({
+              background: true,
+              content: "新增成功"
+            });
+            this.getConfig();
+          } else {
+            this.$Message["error"]({
+              background: true,
+              content: resp.data.data
+            });
+          }
+        });
     },
-    addEstate() {
-      this.estateList.push(this.estate);
+    deleteLevel(item) {
+      this.$Spin.show();
+      http
+        .delete(api.DELETELEVELCONFIG, {
+          ID: item.id
+        })
+        .then(resp => {
+          this.$Spin.hide();
+          if (resp.data.success) {
+            this.$Message["success"]({
+              background: true,
+              content: "删除成功"
+            });
+            this.getConfig();
+          } else {
+            this.$Message["error"]({
+              background: true,
+              content: resp.data.data
+            });
+          }
+        });
+    },
+    commitAdd() {
+      let vm = this;
+      if (!vm.formItem.boundaryID) {
+        this.$Message["warning"]({
+          background: true,
+          content: "请选择学区"
+        });
+        return;
+      } else if (!vm.formItem.streetName) {
+        this.$Message["warning"]({
+          background: true,
+          content: "请选择街道"
+        });
+        return;
+      } else if (!vm.formItem.communityID) {
+        this.$Message["warning"]({
+          background: true,
+          content: "请选择社区"
+        });
+        return;
+      } else if (!vm.formItem.smallCommunityName) {
+        this.$Message["warning"]({
+          background: true,
+          content: "请填写小区名称"
+        });
+        return;
+      }
+      let params = {
+        boundaryID: this.formItem.boundaryID,
+        communityID: this.formItem.communityID,
+        smallCommunityName: this.formItem.smallCommunityName
+      };
+      this.$Spin.show();
+      http.post(api.COMMUNITYCONFIG, params).then(resp => {
+        this.$Spin.hide();
+        if (resp.data.success) {
+          this.$Message["success"]({
+            background: true,
+            content: "新增成功"
+          });
+          this.isShowAdd = false;
+          this.getConfig();
+        } else {
+          this.$Message["error"]({
+            background: true,
+            content: resp.data.data
+          });
+        }
+      });
+    },
+    cancel() {
+      this.isShowAdd = false;
+    },
+    commitDelete() {
+      this.$Spin.show();
+      http
+        .delete(api.DELETESMALLCOMMUNITY, {
+          smallCommunityID: this.deleteID
+        })
+        .then(resp => {
+          this.$Spin.hide();
+          if (resp.data.success) {
+            this.$Message["success"]({
+              background: true,
+              content: "删除成功"
+            });
+            this.isShowDelete = false;
+            this.getConfig();
+          } else {
+            this.$Message["error"]({
+              background: true,
+              content: resp.data.message
+            });
+          }
+        });
+    },
+    deleteSmallCommunity(params) {
+      this.deleteID = params.row.smallCommunityID;
+      this.isShowDelete = true;
+    },
+    add() {
+      this.isShowAdd = true;
+      this.formItem = {
+        boundaryID: "",
+        streetName: "",
+        communityID: "",
+        smallCommunityName: ""
+      };
     }
   }
 };
@@ -190,7 +472,7 @@ export default {
             margin-top: 10px;
             flex-wrap: wrap;
             .level-item {
-              width: 100px;
+              width: 80px;
               height: 38px;
               background: #ffffff;
               border: 1px solid #ccd4df;
@@ -243,40 +525,16 @@ export default {
         }
         .relation {
           padding: 10px 0 0 25px;
-          .label {
-            margin: 20px 0 10px 0;
+          .add {
+            display: flex;
+            justify-content: flex-end;
+            padding-right: 20px;
+            padding-bottom: 20px;
           }
-          .add-input {
-            width: 450px;
-            position: relative;
-            .add {
-              position: absolute;
-              right: 20px;
-              top: 50%;
-              transform: translateY(-50%);
-              cursor: pointer;
-              color: @font-color;
-            }
-          }
-          .estate-list {
-            width: 450px;
-            height: 100px;
+          .list {
+            padding-right: 20px;
+            max-height: 500px;
             overflow-y: auto;
-            margin: 10px 0;
-            .estate-item {
-              height: 40px;
-              position: relative;
-              line-height: 40px;
-              padding-left: 10px;
-              span {
-                color: #f56565;
-                position: absolute;
-                right: 20px;
-                top: 50%;
-                transform: translateY(-50%);
-                cursor: pointer;
-              }
-            }
           }
         }
       }

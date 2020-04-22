@@ -21,6 +21,21 @@ export default {
       isShowLogout: false
     };
   },
+  created() {
+    let userInfo = JSON.parse(window.localStorage.getItem("userInfo"));
+    this.userName = userInfo.adminUserID;
+    if (userInfo.identity === "01") {
+      this.userType = userInfo.schoolName;
+    } else if (userInfo.identity === "02") {
+      this.userType = `${userInfo.schoolName}打印老师`;
+    } else if (userInfo.identity === "03") {
+      this.userType = `${userInfo.schoolName}录入老师`;
+    } else if (userInfo.identity === "04") {
+      this.userType = "学生家长";
+    } else if (userInfo.identity === "00") {
+      this.userType = "社会事业局";
+    }
+  },
   methods: {
     logout() {
       this.$router.push({
@@ -39,7 +54,7 @@ export default {
   right: 0;
   top: 0;
   .user {
-    width: 200px;
+    width: 300px;
     height: 60px;
     position: absolute;
     right: 30px;
@@ -47,9 +62,9 @@ export default {
     transform: translateY(-50%);
     display: flex;
     .info {
-      width: 100px;
+      width: 200px;
       .name {
-        width: 100px;
+        width: 200px;
         padding-right: 10px;
         height: 30px;
         line-height: 30px;
@@ -59,7 +74,7 @@ export default {
         font-weight: bold;
       }
       .type {
-        width: 100px;
+        width: 200px;
         padding-right: 10px;
         height: 30px;
         line-height: 30px;

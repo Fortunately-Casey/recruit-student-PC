@@ -37,4 +37,22 @@ http.get = function(apiUrl, params) {
     });
 };
 
+http.delete = function(apiUrl, params) {
+  let token = window.localStorage.getItem("token");
+  const url = getURL(apiUrl);
+  return axios
+    .delete(url, {
+      params: params,
+      headers: {
+        token: token
+      }
+    })
+    .then(resp => {
+      return Promise.resolve(resp);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+};
+
 export default http;

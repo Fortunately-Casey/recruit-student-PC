@@ -1,15 +1,9 @@
 <template>
   <div id="article-list">
     <div class="search-tab">
-      <Form ref="formInline" :model="formInline" :rules="ruleInline" inline style="height:32px">
+      <Form ref="formInline" :model="formInline" inline style="height:32px">
         <FormItem prop="title">
           <Input type="text" v-model="formInline.title" placeholder="标题" style="width:300px" />
-        </FormItem>
-        <FormItem prop="issuer">
-          <Input type="text" v-model="formInline.issuer" placeholder="发布人" />
-        </FormItem>
-        <FormItem prop="date">
-          <DatePicker type="date" placeholder="发布日期" style="width: 200px"></DatePicker>
         </FormItem>
         <FormItem>
           <Button type="primary" @click="print">查询</Button>
@@ -17,30 +11,54 @@
       </Form>
     </div>
     <div class="list">
-      <Table :columns="columns" :data="list" :loading="loading"></Table>
+      <Table :columns="columns" :data="newsList" :loading="loading"></Table>
       <div class="page">
         <Page :total="total" :page-size="pageSize" :current="pageIndex" @on-change="changePage" />
       </div>
     </div>
+    <Modal v-model="isShowDelete" width="360">
+      <p slot="header" style="color:#f60;text-align:center">
+        <Icon type="ios-information-circle"></Icon>
+        <span>删除新闻</span>
+      </p>
+      <div style="text-align:center">
+        <p>确认是否删除该条新闻?</p>
+      </div>
+      <div slot="footer">
+        <Button type="error" size="large" long @click="commitDelete">删除</Button>
+      </div>
+    </Modal>
+    <Modal v-model="isShowEdit" title="新闻编辑" @on-cancel="cancel">
+      <Form :model="formItem" :label-width="100" style="width:400px">
+        <FormItem label="新闻标题">
+          <Input v-model="formItem.title" placeholder="请输入新闻标题" />
+        </FormItem>
+        <FormItem label="新闻链接">
+          <Input v-model="formItem.url" placeholder="请输入新闻链接" />
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="isShowEdit=false">取消</Button>
+        <Button type="primary" size="large" @click="commitEdit">确定</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
-import $ from "jquery";
+import * as api from "@/service/apiList";
+import http from "@/service/service";
 export default {
   data() {
     return {
       formInline: {
-        title: "",
-        studentName: "",
-        issuer: "",
-        date: ""
+        title: ""
       },
-      h_school: "",
-      ruleInline: {},
+      isShowEdit: false,
+      isShowDelete: false,
       columns: [
         {
           title: "序号",
-          key: "index",
+          key: "rowNumber",
           align: "center",
           width: 100
         },
@@ -52,19 +70,13 @@ export default {
         },
         {
           title: "文章链接",
-          key: "url",
+          key: "titleUrl",
           align: "center",
           width: 500
         },
         {
-          title: "发布人",
-          key: "issuer",
-          align: "center",
-          width: 100
-        },
-        {
           title: "发布时间",
-          key: "date",
+          key: "createTime",
           align: "center",
           width: 300
         },
@@ -80,9 +92,14 @@ export default {
                   props: {
                     type: "info",
                     size: "small"
+                  },
+                  on: {
+                    click: () => {
+                      this.editNews(params);
+                    }
                   }
                 },
-                "详情"
+                "编辑"
               ),
               h(
                 "Button",
@@ -91,8 +108,13 @@ export default {
                     type: "error",
                     size: "small"
                   },
-                  style:{
-                    marginLeft:"10px"
+                  style: {
+                    marginLeft: "10px"
+                  },
+                  on: {
+                    click: () => {
+                      this.deleteNews(params);
+                    }
                   }
                 },
                 "删除"
@@ -101,35 +123,106 @@ export default {
           }
         }
       ],
-      list: [
-        {
-          index: 1,
-          title: "平凡人做非凡事",
-          url: "http://www.ntskfqjyzx.edu/articles/2019-031001.html",
-          issuer: "admin",
-          date: "2020/03/10 12:04:32"
-        },
-        {
-          index: 2,
-          title: "自得其乐是一种能力",
-          url: "http://www.ntskfqjyzx.edu/articles/2019-031001.html",
-          issuer: "admin",
-          date: "2020/03/10 12:04:32"
-        }
-      ],
+      formItem: {
+        title: "",
+        url: "",
+        id: ""
+      },
+      newsList: [],
       total: 100,
       pageSize: 10,
       pageIndex: 1,
-      loading: false
+      loading: false,
+      deleteID: ""
     };
   },
-  methods: {
-    changePage() {},
-    print() {
-      
-    }
+  mounted() {
+    this.$nextTick(function() {
+      this.getNewsList();
+    });
   },
-  mounted() {}
+  methods: {
+    getNewsList() {
+      let vm = this;
+      this.$Spin.show();
+      http
+        .post(api.GETNEWSLIST, {
+          currPage: vm.pageIndex,
+          pageSize: vm.pageSize,
+          title: vm.formInline.title
+        })
+        .then(resp => {
+          this.$Spin.hide();
+          this.newsList = resp.data.data;
+          vm.total = resp.data.page.totalCount;
+        });
+    },
+    changePage(page) {
+      this.pageIndex = page;
+      this.getNewsList();
+    },
+    editNews(params) {
+      this.isShowEdit = true;
+      this.formItem.title = params.row.title;
+      this.formItem.id = params.row.id;
+      this.formItem.url = params.row.titleUrl;
+    },
+    deleteNews(params) {
+      this.isShowDelete = true;
+      this.deleteID = params.row.id;
+    },
+    commitDelete() {
+      http
+        .delete(api.DELETENEWSCONFIG, {
+          ID: this.deleteID
+        })
+        .then(resp => {
+          if (resp.data.success) {
+            this.isShowDelete = false;
+            this.$Message["success"]({
+              background: true,
+              content: "删除成功"
+            });
+            this.getNewsList();
+          } else {
+            this.$Message["error"]({
+              background: true,
+              content: resp.data.data
+            });
+          }
+        });
+    },
+    commitEdit() {
+      let vm = this;
+      http
+        .post(api.UPDATENEWSCONFIG, {
+          id: vm.formItem.id,
+          title: vm.formItem.title,
+          titleUrl: vm.formItem.titleUrl
+        })
+        .then(resp => {
+          if (resp.data.success) {
+            this.isShowEdit = false;
+            this.$Message["success"]({
+              background: true,
+              content: "修改成功"
+            });
+            this.getNewsList();
+          } else {
+            this.$Message["error"]({
+              background: true,
+              content: resp.data.data
+            });
+          }
+        });
+    },
+    cancel() {
+      this.isShowEdit = false;
+    },
+    print() {
+      this.getNewsList();
+    }
+  }
 };
 </script>
 

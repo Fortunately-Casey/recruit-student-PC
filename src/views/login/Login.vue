@@ -67,6 +67,7 @@ export default {
   },
   methods: {
     confirm() {
+      this.$Spin.show();
       if (this.isShowLogin) {
         let vm = this;
         if (!vm.userID || !vm.password) {
@@ -83,14 +84,37 @@ export default {
         };
         http.post(api.Login, params).then(resp => {
           if (resp.data.success) {
+            this.$Spin.hide();
             this.$Message["success"]({
               background: true,
               content: "登录成功"
             });
             window.localStorage.setItem("token", resp.data.data.token);
-            // this.$router.push({
-            //   path: "/index"
-            // });
+            window.localStorage.setItem(
+              "userInfo",
+              JSON.stringify(resp.data.data)
+            );
+            if (resp.data.data.identity === "01") {
+              this.$router.push({
+                path: "/schoolConfig"
+              });
+            } else if (resp.data.data.identity === "00") {
+              this.$router.push({
+                path: "/adminPage"
+              });
+            } else if (resp.data.data.identity === "02") {
+              this.$router.push({
+                path: "/schoolManage"
+              });
+            } else if (resp.data.data.identity === "03") {
+              this.$router.push({
+                path: "/schoolManage"
+              });
+            } else if (resp.data.data.identity === "04") {
+              this.$router.push({
+                path: "/patriarch"
+              });
+            }
           } else {
             this.$Message["error"]({
               background: true,
@@ -130,23 +154,6 @@ export default {
           }
         });
       }
-      // if (this.userID === "admin") {
-      //   this.$router.push({
-      //     path: "/adminPage"
-      //   });
-      // } else if (this.userID === "config") {
-      //   this.$router.push({
-      //     path: "/schoolConfig"
-      //   });
-      // } else if (this.userID === "school") {
-      //   this.$router.push({
-      //     path: "/schoolManage"
-      //   });
-      // } else {
-      //   this.$router.push({
-      //     path: "/patriarch"
-      //   });
-      // }
     }
   },
   components: {
