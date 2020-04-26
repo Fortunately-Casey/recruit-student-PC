@@ -65,6 +65,16 @@ export default {
       isShowLogin: true
     };
   },
+  created() {
+    let username = window.localStorage.getItem("username");
+    let password = window.localStorage.getItem("password");
+    if(username) {
+      this.userID = username;
+    }
+    if(password) {
+      this.password = password;
+    }
+  },
   methods: {
     confirm() {
       this.$Spin.show();
@@ -90,6 +100,8 @@ export default {
               content: "登录成功"
             });
             window.localStorage.setItem("token", resp.data.data.token);
+            window.localStorage.setItem("username", vm.userID);
+            window.localStorage.setItem("password", vm.password);
             window.localStorage.setItem(
               "userInfo",
               JSON.stringify(resp.data.data)

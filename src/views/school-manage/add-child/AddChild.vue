@@ -353,7 +353,7 @@
     <div class="bottom">
       <div class="save-button" @click="isShowSave = true" v-if="!isDisabled">保存</div>
       <div class="confirm-button" @click="commitVerity" v-if="!isDisabled">提交</div>
-      <div class="print-button" v-if="isDisabled">打印登记表</div>
+      <div class="print-button" v-if="isDisabled" @click="printTable">打印登记表</div>
     </div>
     <Modal v-model="isShowCommit" title="提交" @on-ok="commit">
       <p slot="header" style="color:#fff;text-align:left">
@@ -899,6 +899,10 @@ export default {
           break;
       }
       return result;
+    },
+    // 打印登记表
+    printTable() {
+      window.open(`http://localhost:8066/printPage?id=${this.$route.query.id}`)
     }
   }
 };

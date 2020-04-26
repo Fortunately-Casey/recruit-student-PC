@@ -87,6 +87,10 @@ const routes = [{
       name: 'addArticle',
       component: resolve => require(['../views/admin-page/add-article/AddArticle.vue'], resolve),
     }]
+  },{
+    path:"/printPage",//打印页面
+    name:"printPage",
+    component: resolve => require(["../views/school-manage/print-page/PrintPage.vue"], resolve)
   }
 ]
 
