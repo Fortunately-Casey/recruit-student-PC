@@ -353,6 +353,7 @@
     <div class="bottom">
       <div class="save-button" @click="isShowSave = true" v-if="!isDisabled">保存</div>
       <div class="confirm-button" @click="commitVerity" v-if="!isDisabled">提交</div>
+      <div class="print-button" v-if="isDisabled">打印登记表</div>
     </div>
     <Modal v-model="isShowCommit" title="提交" @on-ok="commit">
       <p slot="header" style="color:#fff;text-align:left">
@@ -390,6 +391,7 @@ export default {
       isDisabled: false,
       spinShow: false,
       spinShow1: false,
+      isShowSuccess: false,
       name: "",
       idCard: "",
       sex: "",
@@ -496,7 +498,6 @@ export default {
       alternativeSchoolID: "",
       alternativeSchoolName: "",
       isChecked: false,
-      isShowSuccess: false,
       forecastCode: ""
     };
   },
@@ -837,7 +838,7 @@ export default {
           } else {
             this.$Message.success(commit ? "提交成功" : "保存成功");
             vm.$router.push({
-              path: "/patriarch/childManage"
+              path: "/schoolManage/savedList"
             });
           }
         } else {
@@ -1134,7 +1135,8 @@ export default {
     justify-content: center;
     align-items: center;
     .save-button,
-    .confirm-button {
+    .confirm-button,
+    .print-button {
       width: 120px;
       height: 40px;
       border-radius: 20px;
@@ -1144,6 +1146,9 @@ export default {
       text-align: center;
       font-size: 16px;
       cursor: pointer;
+    }
+    .print-button{
+      width: 140px;
     }
     .save-button {
       margin-right: 10px;

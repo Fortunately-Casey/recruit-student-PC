@@ -2,12 +2,9 @@
   <div id="saved-list">
     <div class="search-tab">
       <Form ref="formInline" :model="formInline" :rules="ruleInline" inline style="height:32px">
-        <FormItem prop="number">
-          <Input type="text" v-model="formInline.number" placeholder="报名号" />
-        </FormItem>
         <FormItem prop="studentName">
           <div style="position:relative" @mouseover="highlightText" @mouseout="normalText">
-            <Input type="text" v-model="formInline.studentName" style="width:220px" />
+            <Input type="text" v-model="formInline.name" style="width:220px" />
             <span class="student-name">
               <span class="title" :class="{'highlight-on':h_school}">学生姓名</span>
             </span>
@@ -17,10 +14,11 @@
           <Input type="text" v-model="formInline.idCard" placeholder="身份证号" />
         </FormItem>
         <FormItem prop="phone">
-          <Input type="text" v-model="formInline.phone" placeholder="联系电话" />
+          <Input type="text" v-model="formInline.linkPhone" placeholder="联系电话" />
         </FormItem>
         <FormItem>
-          <Button type="primary">查询</Button>
+          <Button type="primary" @click="search">查询</Button>
+          <Button type="warning" @click="reload" style="margin-left:10px">重置</Button>
         </FormItem>
       </Form>
     </div>
@@ -30,36 +28,46 @@
         <Page :total="total" :page-size="pageSize" :current="pageIndex" @on-change="changePage" />
       </div>
     </div>
+    <Modal v-model="isShowDelete" width="360">
+      <p slot="header" style="color:#f60;text-align:center">
+        <Icon type="ios-information-circle"></Icon>
+        <span>删除学生</span>
+      </p>
+      <div style="text-align:center">
+        <p>确认是否删除该学生信息?</p>
+      </div>
+      <div slot="footer">
+        <Button type="error" size="large" long @click="commitDelete">删除</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 
 <script>
 import $ from "jquery";
+import * as api from "@/service/apiList";
+import http from "@/service/service";
 export default {
   data() {
     return {
+      isShowDelete: false,
       formInline: {
-        number: "",
-        studentName: "",
+        name: "",
         idCard: "",
-        phone: ""
+        linkPhone: ""
       },
       h_school: "",
       ruleInline: {},
       columns: [
         {
           title: "序号",
-          key: "index",
-          align: "center"
-        },
-        {
-          title: "预报名号",
-          key: "code",
-          align: "center"
+          key: "rowNumber",
+          align: "center",
+          width:100
         },
         {
           title: "学生姓名",
-          key: "studentName",
+          key: "name",
           align: "center"
         },
         {
@@ -75,42 +83,151 @@ export default {
         {
           title: "户口所在地",
           key: "permanentAddress",
-          align: "center"
+          align: "center",
+          render: (h, params) => {
+            return h("div", [
+              h(
+                "span",
+                params.row.provincesName +
+                  params.row.cityName +
+                  params.row.areaName
+              )
+            ]);
+          }
         },
         {
           title: "现居住小区",
-          key: "nowAddress",
+          key: "smallCommunityName",
           align: "center"
         },
         {
           title: "预报名学校",
-          key: "applySchool",
+          key: "schoolName",
           align: "center"
         },
         {
           title: "是否有房产",
           key: "hasHouse",
-          align: "center"
+          align: "center",
+          render: (h, params) => {
+            return h("div", [h("span", params.row.property ? "是" : "否")]);
+          }
         },
         {
           title: "操作",
           key: "option",
-          align: "center"
+          align: "center",
+          render: (h, params) => {
+            return h("div", [
+              h(
+                "Button",
+                {
+                  props: {
+                    type: "info",
+                    size: "small"
+                  },
+                  on: {
+                    click: () => {
+                      this.editStudent(params);
+                    }
+                  }
+                },
+                "编辑"
+              ),
+              h(
+                "Button",
+                {
+                  props: {
+                    type: "error",
+                    size: "small"
+                  },
+                  style: {
+                    marginLeft: "10px"
+                  },
+                  on: {
+                    click: () => {
+                      this.deleteStudent(params);
+                    }
+                  }
+                },
+                "删除"
+              )
+            ]);
+          }
         }
       ],
-      list: [
-        {
-          index:1,
-          code:"111"
-        }
-      ],
-      total: 100,
+      list: [],
+      total: 0,
       pageSize: 10,
       pageIndex: 1,
-      loading: false
+      loading: false,
+      deleteID: false
     };
   },
+  mounted() {
+    this.$nextTick(function() {
+      this.getSaveList();
+    });
+  },
   methods: {
+    editStudent(params) {
+      this.$router.push({
+        path: "/schoolManage/addChild",
+        query: {
+          id: params.row.id
+        }
+      });
+    },
+    deleteStudent(params) {
+      this.deleteID = params.row.id;
+      this.isShowDelete = true;
+    },
+    commitDelete() {
+      let vm = this;
+      http
+        .delete(api.DELETESTUDENTBYID, {
+          studentID: vm.deleteID
+        })
+        .then(resp => {
+          if (resp.data.success) {
+            vm.$Message.success("删除成功！");
+            vm.getSaveList();
+            vm.isShowDelete = false;
+          } else {
+            vm.$Message.error("删除失败！");
+          }
+        });
+    },
+    search() {
+      this.getSaveList();
+    },
+    reload() {
+      this.formInline = {
+        name: "",
+        idCard: "",
+        linkPhone: ""
+      };
+      this.getSaveList();
+    },
+    getSaveList() {
+      let vm = this;
+      this.$Spin.show();
+      http
+        .post(api.GETSTUDENTLISTPAGE, {
+          name: vm.formInline.name,
+          idCard: vm.formInline.idCard,
+          linkPhone: vm.formInline.linkPhone,
+          commitStatus: 0,
+          auditStatus: 0,
+          currPage: vm.pageIndex,
+          pageSize: vm.pageSize
+        })
+        .then(resp => {
+          this.$Spin.hide();
+          vm.list = resp.data.data;
+          vm.total = resp.data.page.totalCount;
+        });
+    },
     highlightText() {
       this.h_school = true;
     },
@@ -123,13 +240,16 @@ export default {
         return;
       this.h_school = false;
     },
-    changePage() {}
+    changePage(page) {
+      this.pageIndex = page;
+      this.getSaveList();
+    }
   }
 };
 </script>
 
 <style lang="less" scoped>
-@font-color: #64B3ED;
+@font-color: #64b3ed;
 #saved-list {
   flex: 1;
   display: flex;

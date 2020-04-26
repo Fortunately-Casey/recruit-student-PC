@@ -223,12 +223,12 @@ export default {
       http.get(api.GETSCHOOLCONFIG).then(resp => {
         this.$Spin.hide();
         vm.value1 = [
-          new Date(resp.data.data.school.enterSchoolBeginDate),
-          new Date(resp.data.data.school.enterSchoolEndDate)
+          new Date(resp.data.data.school.enterSchoolBeginDate?resp.data.data.school.enterSchoolBeginDate:""),
+          new Date(resp.data.data.school.enterSchoolEndDate?resp.data.data.school.enterSchoolEndDate:"")
         ];
         vm.value2 = [
-          new Date(resp.data.data.school.birthdayLimitStartDate),
-          new Date(resp.data.data.school.birthdayLimitEndDate)
+          new Date(resp.data.data.school.birthdayLimitStartDate?resp.data.data.school.birthdayLimitStartDate:""),
+          new Date(resp.data.data.school.birthdayLimitEndDate?resp.data.data.school.birthdayLimitEndDate:"")
         ];
         vm.levelList = resp.data.data.levelConfigs;
         vm.list = resp.data.data.communityInformation;

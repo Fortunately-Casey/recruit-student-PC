@@ -7,8 +7,14 @@
           <div class="reminder-title" v-if="chosedTab === 0"></div>
           <div class="school-title" v-else></div>
           <div class="message-list" v-if="chosedTab === 0">
-            <div class="message" v-for="(item,index) in newsList" :key="index" @click="toNews(item)">
-              <div class="voice"></div>{{item.title}}
+            <div
+              class="message"
+              v-for="(item,index) in newsList"
+              :key="index"
+              @click="toNews(item)"
+            >
+              <div class="voice"></div>
+              {{item.title}}
             </div>
           </div>
           <div class="school-list" v-else>
@@ -68,30 +74,33 @@ export default {
   data() {
     return {
       chosedTab: 0,
-      newsList:[]
+      newsList: []
     };
   },
   mounted() {
     this.$nextTick(function() {
       this.getNewsList();
-    })
+    });
   },
   methods: {
     getNewsList() {
       this.$Spin.show();
-      http.post(api.GETNEWSLIST,{
-        currPage:1,
-        pageSize:100,
-        title:""
-      }).then((resp) => {
-        this.$Spin.hide();
-        this.newsList = resp.data.data; 
-      })
+      http
+        .post(api.GETNEWSLIST, {
+          currPage: 1,
+          pageSize: 100,
+          title: ""
+        })
+        .then(resp => {
+          this.$Spin.hide();
+          this.newsList = resp.data.data;
+        });
     },
     toLogin() {
-      this.$router.push({
-        path: "/login"
-      });
+      // this.$router.push({
+      //   path: "/login"
+      // });
+      window.open("http://localhost:8066/login");
     },
     toNews(item) {
       window.open(item.titleUrl);

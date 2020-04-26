@@ -10,8 +10,22 @@ export const GETSMALLCOMMUNITYBYCOMMUNITYID =
   "/education/manager/api/getSmallCommunityByCommunityID"; //获取社区下的小区
 export const GETSCHOOLBYSMALLCOMMUNITYID =
   "/education/manager/api/getSchoolBySmallCommunityID"; //根据出生年月日和现居住小区确定预报名学校
+export const GETSCHOOLLIST =
+  "/education/manager/api/getSchoolList"; //获取备选学校
+
+export const GETSTUDENTLISTPAGE =
+  "/education/manager/api/getStudentListPage"; //获取学生列表
 
 
+
+/**
+ * 学生信息
+ */
+export const SAVEANDCOMMIT = "/education/manager/api/saveAndCommit"; //保存和提交
+export const DELETESTUDENTBYID = "/education/manager/api/deleteStudentByID"; //删除学生
+export const GETSTUDENTDETAIL = "/education/manager/api/getStudentDetail"; //获取学生详情
+
+  
 /**
  * 学校配置
  */

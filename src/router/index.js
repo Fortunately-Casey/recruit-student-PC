@@ -58,7 +58,7 @@ const routes = [{
       {
         path: "/schoolManage/addChild", //新增子女
         name: 'schoolAdd',
-        component: resolve => require(['../views/patriarch/add-child/AddChild.vue'], resolve),
+        component: resolve => require(['../views/school-manage/add-child/AddChild.vue'], resolve),
       },
     ]
   },
@@ -72,7 +72,7 @@ const routes = [{
     component: resolve => require(['../views/admin-page/AdminPage.vue'], resolve),
     children: [{
       path: "/",
-      name: 'adminPage',
+      name: 'adminPage', 
       redirect: 'articleList'
     }, {
       path: "/adminPage/articleList", //文章列表
