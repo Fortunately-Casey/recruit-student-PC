@@ -164,10 +164,10 @@ export default {
       deleteID: false
     };
   },
+  created() {
+    this.getSaveList();
+  },
   mounted() {
-    this.$nextTick(function() {
-      this.getSaveList();
-    });
   },
   methods: {
     editStudent(params) {

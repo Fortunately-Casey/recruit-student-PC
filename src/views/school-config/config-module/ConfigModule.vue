@@ -35,8 +35,9 @@
           <div class="header">面谈等级配置</div>
           <div class="levels">
             <div class="label">输入等级</div>
+            <Input v-model="sort" size="large" style="width:80px" placeholder="序号"/>
             <div class="add-input">
-              <Input v-model="level" size="large" style="width:150px" />
+              <Input v-model="level" size="large" style="width:150px" placeholder="等级"/>
               <div class="add" @click="addLevel">添加</div>
             </div>
             <div class="level-list">
@@ -118,6 +119,7 @@ export default {
       value2: "",
       levelList: [],
       level: "",
+      sort:"",
       columns: [
         {
           title: "街道",
@@ -456,6 +458,8 @@ export default {
             margin: 20px 0 10px 0;
           }
           .add-input {
+            display: inline-block;
+            margin-left: 10px;
             position: relative;
             width: 150px;
             .add {
@@ -535,6 +539,7 @@ export default {
             padding-right: 20px;
             max-height: 500px;
             overflow-y: auto;
+            margin-bottom: 40px;
           }
         }
       }

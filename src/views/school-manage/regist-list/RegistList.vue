@@ -53,7 +53,7 @@ export default {
           title: "序号",
           key: "rowNumber",
           align: "center",
-          width:100
+          width: 100
         },
         {
           title: "预报名号",
@@ -140,11 +140,10 @@ export default {
       loading: false
     };
   },
-  mounted() {
-    this.$nextTick(function() {
-      this.getRegistList();
-    });
+  created() {
+    this.getRegistList();
   },
+  mounted() {},
   methods: {
     highlightText() {
       this.h_school = true;

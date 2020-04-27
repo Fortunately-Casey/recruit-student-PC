@@ -100,7 +100,7 @@ export default {
       // this.$router.push({
       //   path: "/login"
       // });
-      window.open("http://localhost:8066/login");
+      window.open(`${window.location.origin}/login`);
     },
     toNews(item) {
       window.open(item.titleUrl);

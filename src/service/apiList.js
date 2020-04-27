@@ -36,6 +36,8 @@ export const DELETELEVELCONFIG = "/education/manager/api/deleteLevelConfig"; //�
 export const GETBOUNDARYLIST = "/education/manager/api/getBoundaryList"; //获取界限信息
 export const COMMUNITYCONFIG = "/education/manager/api/communityConfig"; //学校配置小区
 export const DELETESMALLCOMMUNITY = "/education/manager/api/deleteSmallCommunity"; //删除小区
+export const GETPARENTACCOUNTBYSCHOOLID = "/education/manager/api/getParentAccountBySchoolID"; //获取学校下管理的账号
+export const EXPORTWORDBYSCHOOL = "/education/manager/api/exportWordBySchool"; //导出入学通知书
 
 
 /**

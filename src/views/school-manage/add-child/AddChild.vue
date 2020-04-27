@@ -482,7 +482,6 @@ export default {
       specialCondition: "无",
       otherRemark: "",
       // ========================
-
       isShowCommit: false,
       isShowSave: false,
       isShowAlternative: false,
@@ -902,7 +901,7 @@ export default {
     },
     // 打印登记表
     printTable() {
-      window.open(`http://localhost:8066/printPage?id=${this.$route.query.id}`)
+      window.open(`${window.location.origin}/printPage?id=${this.$route.query.id}`)
     }
   }
 };
