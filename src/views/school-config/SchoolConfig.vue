@@ -8,17 +8,10 @@
       <div class="tab-bar">
         <div class="tab-item" :class="chosedIndex === 0?'chosed':''" @click="chosedIndex = 0">学校配置</div>
         <div class="tab-item" :class="chosedIndex === 1?'chosed':''" @click="chosedIndex = 1">账号管理</div>
-        <div class="output-button" @click="isShowExport = true">导出入学通知书</div>
+        <div class="output-button" @click="exportExcel">导出摸底情况</div>
       </div>
       <config-module v-if="chosedIndex == 0"></config-module>
       <account-number v-if="chosedIndex == 1"></account-number>
-      <Modal v-model="isShowExport" title="选择入学时间">
-        <el-date-picker v-model="exportDate" type="datetime" placeholder="选择日期时间"></el-date-picker>
-        <div slot="footer">
-          <Button type="text" size="large" @click="isShowExport=false">取消</Button>
-          <Button type="primary" size="large" @click="exportWordBySchool">确定</Button>
-        </div>
-      </Modal>
     </div>
   </div>
 </template>
@@ -30,29 +23,24 @@ import ConfigModule from "./config-module/ConfigModule";
 import AccountNumber from "./account-number/AccountNumber";
 import * as api from "@/service/apiList";
 import http from "@/service/service";
-import { TodateTime } from "@/common/tool/tool";
 export default {
   data() {
     return {
       chosedIndex: 0,
-      isShowExport: false,
-      exportDate: ""
     };
   },
   created() {},
   methods: {
-    exportWordBySchool() {
-      http
-        .get(api.EXPORTWORDBYSCHOOL, {
-          enterTime: TodateTime(this.exportDate)
-        })
-        .then(resp => {
-          if (resp.data.success) {
+    exportExcel() {
+      http.get(api.EXPORTSTUDENTBYONEORMORE).then((resp) => {
+       if (resp.data.success) {
+            // window.location.href = `http://223.113.1.77:10058${resp.data.data}`;
+            console.log(`http://223.113.1.77:10058${resp.data.data}`);
             this.isShowExport = false;
           } else {
-            this.$Message.warning("导出失败！");
+            this.$Message.warning(resp.data.message);
           }
-        });
+      })
     }
   },
   components: {

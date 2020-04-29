@@ -3,7 +3,10 @@
     <div class="add-main">
       <div class="left">
         <div class="forecast-code" v-if="isDisabled">
-          <div class="header">预报名唯一码：<span style="font-size:18px;color:#64B3ED">{{forecastCode}}</span></div>
+          <div class="header">
+            预报名唯一码：
+            <span style="font-size:18px;color:#64B3ED">{{forecastCode}}</span>
+          </div>
         </div>
         <div class="student-info">
           <div class="header">学生信息</div>
@@ -500,15 +503,16 @@ export default {
       forecastCode: ""
     };
   },
+  created() {
+    this.getProvinceArea();
+    this.getStreetList();
+    this.getSchoolList();
+    if (this.$route.query.id) {
+      this.getStudentDetail(this.$route.query.id);
+    }
+  },
   mounted() {
-    this.$nextTick(function() {
-      this.getProvinceArea();
-      this.getStreetList();
-      this.getSchoolList();
-      if (this.$route.query.id) {
-        this.getStudentDetail(this.$route.query.id);
-      }
-    });
+    this.$nextTick(function() {});
   },
   methods: {
     getStudentDetail(id) {
@@ -901,7 +905,9 @@ export default {
     },
     // 打印登记表
     printTable() {
-      window.open(`${window.location.origin}/printPage?id=${this.$route.query.id}`)
+      window.open(
+        `${window.location.origin}/printPage?id=${this.$route.query.id}`
+      );
     }
   }
 };
@@ -935,7 +941,7 @@ export default {
           line-height: 24px;
           border-left: 4px solid @font-color;
           padding-left: 15px;
-          margin-top: 20px;
+          margin-top: 15px;
         }
       }
       .student-info {
@@ -943,7 +949,7 @@ export default {
         .personage-info {
           height: 66px;
           display: flex;
-          margin-top: 10px;
+          margin-top: 5px;
           .name,
           .idCard,
           .birthday {
@@ -1019,14 +1025,14 @@ export default {
           .get-time {
             width: 33.33%;
             .label {
-              margin: 15px 0 10px 0;
+              margin: 10px 0 10px 0;
             }
           }
           .house-code,
           .insurance-address {
             flex: 1;
             .label {
-              margin: 15px 0 10px 0;
+              margin: 10px 0 10px 0;
             }
           }
         }
@@ -1037,7 +1043,7 @@ export default {
           padding-left: 25px;
           .school-name {
             .label {
-              margin: 15px 0 10px 0;
+              margin: 10px 0 10px 0;
             }
           }
         }
@@ -1062,7 +1068,7 @@ export default {
           height: 24px;
           border-left: 4px solid @font-color;
           padding-left: 15px;
-          margin-top: 20px;
+          margin-top: 15px;
         }
       }
       .patriarch-info {
@@ -1150,7 +1156,7 @@ export default {
       font-size: 16px;
       cursor: pointer;
     }
-    .print-button{
+    .print-button {
       width: 140px;
     }
     .save-button {
@@ -1172,5 +1178,11 @@ export default {
 }
 /deep/.ivu-icon.ivu-icon-ios-close {
   color: #fff;
+}
+/deep/.ivu-input-disabled {
+  color: #2d3748;
+}
+/deep/.ivu-select-disabled .ivu-select-selection {
+  color: #2d3748;
 }
 </style>

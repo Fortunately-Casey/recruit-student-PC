@@ -15,6 +15,9 @@
         <div class="add-button" @click="addArticle" v-if="tabIndex === 0">
           <Icon type="ios-copy-outline" style="font-size:20px" />新增发文
         </div>
+        <div class="export-button" @click="exportExcel" v-if="tabIndex === 1">
+          <Icon type="md-arrow-down" style="font-size:20px" />导出摸底情况
+        </div>
       </div>
       <router-view></router-view>
     </div>
@@ -23,6 +26,8 @@
 <script>
 import MHeader from "@/components/Header.vue";
 import UserInfo from "@/components/UserInfo.vue";
+import * as api from "@/service/apiList";
+import http from "@/service/service";
 export default {
   data() {
     return {
@@ -69,6 +74,17 @@ export default {
       this.$router.push({
         path: "/adminPage/addArticle"
       });
+    },
+    exportExcel() {
+      http.get(api.EXPORTSTUDENTBYONEORMORE).then(resp => {
+        if (resp.data.success) {
+          // window.location.href = `http://223.113.1.77:10058${resp.data.data}`;
+          console.log(`http://223.113.1.77:10058${resp.data.data}`);
+          this.isShowExport = false;
+        } else {
+          this.$Message.warning(resp.data.message);
+        }
+      });
     }
   },
   components: {
@@ -113,7 +129,8 @@ export default {
         color: @font-color;
       }
       .add-item,
-      .add-button {
+      .add-button,
+      .export-button {
         cursor: pointer;
         width: 103px;
         height: 48px;
@@ -124,6 +141,12 @@ export default {
         text-align: center;
         margin-left: 30px;
         line-height: 48px;
+      }
+      .export-button {
+        width: 150px;
+        position: absolute;
+        right: 30px;
+        top: 0px;
       }
       .add-button {
         position: absolute;

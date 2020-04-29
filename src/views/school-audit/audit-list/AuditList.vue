@@ -195,7 +195,7 @@ export default {
     },
     getDetail(params) {
       this.$router.push({
-        path: "/schoolManage/addChild",
+        path: "/schoolAudit/auditChild",
         query: {
           id: params.row.id
         }

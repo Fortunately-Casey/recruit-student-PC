@@ -147,21 +147,33 @@
             </div>
           </div>
           <div class="alternative-school" v-if="isShowAlternative">
-            <div class="label">备选学校</div>
-            <Select
-              style="width:145px"
-              v-model="alternativeSchoolID"
-              placeholder="备选学校"
-              @on-change="choseAlternative"
-              :label-in-value="true"
-              :disabled="isDisabled"
-            >
-              <Option
-                :value="item.schoolID"
-                v-for="(item,index) in schoolList"
-                :key="index"
-              >{{item.schoolName}}</Option>
-            </Select>
+            <div class="alternative">
+              <div class="label">备选学校</div>
+              <Select
+                style="width:145px"
+                v-model="alternativeSchoolID"
+                placeholder="备选学校"
+                @on-change="choseAlternative"
+                :label-in-value="true"
+                :disabled="isDisabled"
+              >
+                <Option
+                  :value="item.schoolID"
+                  v-for="(item,index) in schoolList"
+                  :key="index"
+                >{{item.schoolName}}</Option>
+              </Select>
+            </div>
+            <div class="integral">
+              <div class="label">积分</div>
+              <Input
+                placeholder="请输入积分"
+                style="width:200px"
+                v-if="isShowAlternative"
+                v-model="point"
+                :disabled="isDisabled"
+              />
+            </div>
           </div>
         </div>
         <div class="house-info">
@@ -370,13 +382,18 @@
           <div class="audit-result">
             <div class="label">审核结果：</div>
             <div class="result-list">
-              <div class="result-item" :class="crossIndex ==0?'cross':''" @click="crossIndex = 0">
+              <div class="result-item" :class="crossIndex ==0?'cross':''" @click="choseAudit(0)">
                 <div class="cross-icon" :class="crossIndex == 0?'cross1':'cross2'"></div>通过
               </div>
-              <div class="result-item" :class="crossIndex ==1?'uncross':''" @click="crossIndex = 1">
+              <div class="result-item" :class="crossIndex ==1?'uncross':''" @click="choseAudit(1)">
                 <div class="cross-icon" :class="crossIndex == 1?'uncross1':'uncross2'"></div>不通过
               </div>
-              <Input style="width:300px;transform:translateY(2px)" placeholder="理由" />
+              <Input
+                style="width:300px;transform:translateY(2px)"
+                placeholder="理由"
+                v-model="auditRemark"
+                :disabled="isDisabled"
+              />
             </div>
           </div>
         </div>
@@ -389,16 +406,7 @@
       <p slot="header" style="color:#fff;text-align:left">
         <span>提交</span>
       </p>
-      <p>确认要提交该学生的信息吗？</p>
-    </Modal>
-    <Modal v-model="isShowSuccess" footer-hide width="300">
-      <p slot="header" style="color:#fff;text-align:left">
-        <Icon type="md-checkmark-circle" size="25" />
-        <span>&nbsp;提交成功！</span>
-      </p>
-      <div style="text-align:center;font-size:14px;margin-bottom:10px">预报名唯一码：</div>
-      <div style="text-align:center;font-size:22px;font-weight:bold;color:#64b3ed">{{forecastCode}}</div>
-      <div style="text-align:center;margin-top:15px">请妥善保管，此号码为报名上学的唯一凭证</div>
+      <p>确认要提交该学生的审核信息吗？</p>
     </Modal>
   </div>
 </template>
@@ -413,7 +421,8 @@ export default {
     return {
       crossIndex: 0,
       chosedLevel: 0,
-      isShowLevelList:false,
+      isShowLevelList: false,
+      point: "",
       ID: "",
       isDisabled: false,
       spinShow: false,
@@ -522,14 +531,14 @@ export default {
       schoolList: [],
       alternativeSchoolID: "",
       alternativeSchoolName: "",
-      isChecked: false,
       forecastCode: "",
       levelList: [],
-      level:""
+      level: "",
+      auditRemark: "",
+      levelID: ""
     };
   },
   created() {
-    this.getLevelList();
     this.getProvinceArea();
     this.getStreetList();
     this.getSchoolList();
@@ -542,10 +551,21 @@ export default {
   },
   methods: {
     getLevelList() {
+      let vm = this;
       this.isShowLevelList = true;
       http.get(api.GETLISTLEVEL).then(resp => {
         this.isShowLevelList = false;
         this.levelList = resp.data.data;
+        if (vm.levelID) {
+          vm.levelList.map((v, i) => {
+            if (v.id == vm.levelID) {
+              vm.level = v;
+              vm.chosedLevel = i;
+            }
+          });
+        } else {
+          this.level = resp.data.data[0];
+        }
       });
     },
     getStudentDetail(id) {
@@ -558,8 +578,8 @@ export default {
         .then(resp => {
           this.$Spin.hide();
           let res = resp.data.data;
-          if (res.auditStatus == 1) {
-            console.log(111);
+          this.getLevelList();
+          if (res.auditStatus == 1 || res.auditStatus == 2) {
             vm.isDisabled = true;
           } else {
             vm.isDisabled = false;
@@ -604,6 +624,10 @@ export default {
           vm.alternativeSchoolID = Number(res.alternativeSchoolID);
           vm.streetId = res.smallCommunity.streetID;
           vm.communityId = res.smallCommunity.communityID;
+          vm.auditRemark = res.auditRemark;
+          vm.crossIndex = res.auditStatus == 0 ? 0 : res.auditStatus - 1;
+          vm.levelID = res.levelID;
+          vm.point = res.point;
           if (vm.alternativeSchoolID) {
             vm.isShowAlternative = true;
           }
@@ -651,9 +675,18 @@ export default {
           }
         });
     },
-    choseLevel(item,index) {
+    choseLevel(item, index) {
+      if (this.isDisabled) {
+        return;
+      }
       this.chosedLevel = index;
       this.level = item;
+    },
+    choseAudit(index) {
+      if (this.isDisabled) {
+        return;
+      }
+      this.crossIndex = index;
     },
     // 获取备选学校
     getSchoolList() {
@@ -769,9 +802,6 @@ export default {
     todate(date) {
       return Todate(date);
     },
-    save() {
-      this.saveConfirm(false);
-    },
     commitVerity() {
       let vm = this;
       if (
@@ -821,11 +851,15 @@ export default {
         this.$Message.warning("至少填写一个完整的家长信息！");
         return;
       }
-      if (this.isChecked) {
-        this.isShowCommit = true;
-      } else {
-        this.$Message.warning("请阅读并勾选承诺书后再进行提交！");
+      if (!vm.auditRemark) {
+        this.$Message.warning("请填写审核理由！");
+        return;
       }
+      if (!vm.point && vm.isShowAlternative) {
+        this.$Message.warning("请填写积分！");
+        return;
+      }
+      this.isShowCommit = true;
     },
     commit() {
       this.saveConfirm(true);
@@ -865,23 +899,21 @@ export default {
         specialCondition: vm.returnSpecial(vm.specialCondition),
         otherRemark: vm.otherRemark,
         operateCommit: commit,
-        auditStatus: 0,
         alternativeSchoolName: vm.alternativeSchoolName,
-        alternativeSchoolID: vm.alternativeSchoolID
+        alternativeSchoolID: vm.alternativeSchoolID,
+        levelID: vm.level.id,
+        auditStatus: vm.crossIndex + 1,
+        auditRemark: vm.auditRemark,
+        point: vm.point
       };
       this.$Spin.show();
       http.post(api.SAVEANDCOMMIT, params).then(resp => {
         if (resp.data.success) {
           this.$Spin.hide();
-          if (commit) {
-            vm.forecastCode = resp.data.data.forecastCode;
-            vm.isShowSuccess = true;
-          } else {
-            this.$Message.success(commit ? "提交成功" : "保存成功");
-            vm.$router.push({
-              path: "/schoolManage/savedList"
-            });
-          }
+          this.$Message.success(commit ? "提交成功" : "保存成功");
+          vm.$router.push({
+            path: "/schoolAudit/auditList"
+          });
         } else {
           this.$Message.warning(resp.data.message);
         }
@@ -973,7 +1005,7 @@ export default {
           line-height: 24px;
           border-left: 4px solid @font-color;
           padding-left: 15px;
-          margin-top: 20px;
+          margin-top: 15px;
         }
       }
       .student-info {
@@ -981,7 +1013,7 @@ export default {
         .personage-info {
           height: 66px;
           display: flex;
-          margin-top: 10px;
+          margin-top: 5px;
           .name,
           .idCard,
           .birthday {
@@ -1030,6 +1062,13 @@ export default {
         }
         .alternative-school {
           padding-left: 25px;
+          display: flex;
+          .alternative {
+            flex: 1;
+          }
+          .integral {
+            flex: 1;
+          }
           .label {
             margin: 15px 0 10px 0;
           }
@@ -1057,14 +1096,14 @@ export default {
           .get-time {
             width: 33.33%;
             .label {
-              margin: 15px 0 10px 0;
+              margin: 10px 0 10px 0;
             }
           }
           .house-code,
           .insurance-address {
             flex: 1;
             .label {
-              margin: 15px 0 10px 0;
+              margin: 10px 0 10px 0;
             }
           }
         }
@@ -1075,7 +1114,7 @@ export default {
           padding-left: 25px;
           .school-name {
             .label {
-              margin: 15px 0 10px 0;
+              margin: 10px 0 10px 0;
             }
           }
         }
@@ -1316,5 +1355,11 @@ export default {
 }
 /deep/.ivu-icon.ivu-icon-ios-close {
   color: #fff;
+}
+/deep/.ivu-input-disabled {
+  color: #2d3748;
+}
+/deep/.ivu-select-disabled .ivu-select-selection {
+  color: #2d3748;
 }
 </style>

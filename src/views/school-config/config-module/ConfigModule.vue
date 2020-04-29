@@ -35,9 +35,15 @@
           <div class="header">面谈等级配置</div>
           <div class="levels">
             <div class="label">输入等级</div>
-            <Input v-model="sort" size="large" style="width:80px" placeholder="序号"/>
+            <Input v-model="sort" size="large" style="width:80px" type="number" placeholder="等级" />
             <div class="add-input">
-              <Input v-model="level" size="large" style="width:150px" placeholder="等级"/>
+              <Input
+                v-model="level"
+                size="large"
+                style="width:150px"
+                placeholder="等级名称"
+                maxlength="3"
+              />
               <div class="add" @click="addLevel">添加</div>
             </div>
             <div class="level-list">
@@ -119,7 +125,7 @@ export default {
       value2: "",
       levelList: [],
       level: "",
-      sort:"",
+      sort: "",
       columns: [
         {
           title: "街道",
@@ -225,12 +231,28 @@ export default {
       http.get(api.GETSCHOOLCONFIG).then(resp => {
         this.$Spin.hide();
         vm.value1 = [
-          new Date(resp.data.data.school.enterSchoolBeginDate?resp.data.data.school.enterSchoolBeginDate:""),
-          new Date(resp.data.data.school.enterSchoolEndDate?resp.data.data.school.enterSchoolEndDate:"")
+          new Date(
+            resp.data.data.school.enterSchoolBeginDate
+              ? resp.data.data.school.enterSchoolBeginDate
+              : ""
+          ),
+          new Date(
+            resp.data.data.school.enterSchoolEndDate
+              ? resp.data.data.school.enterSchoolEndDate
+              : ""
+          )
         ];
         vm.value2 = [
-          new Date(resp.data.data.school.birthdayLimitStartDate?resp.data.data.school.birthdayLimitStartDate:""),
-          new Date(resp.data.data.school.birthdayLimitEndDate?resp.data.data.school.birthdayLimitEndDate:"")
+          new Date(
+            resp.data.data.school.birthdayLimitStartDate
+              ? resp.data.data.school.birthdayLimitStartDate
+              : ""
+          ),
+          new Date(
+            resp.data.data.school.birthdayLimitEndDate
+              ? resp.data.data.school.birthdayLimitEndDate
+              : ""
+          )
         ];
         vm.levelList = resp.data.data.levelConfigs;
         vm.list = resp.data.data.communityInformation;
@@ -278,17 +300,18 @@ export default {
     },
     addLevel() {
       let vm = this;
-      if (!vm.level) {
+      if (!vm.level || !vm.sort) {
         this.$Message["warning"]({
           background: true,
-          content: "请输入等级！"
+          content: "请输入等级名称以及对应的等级！"
         });
         return;
       }
       this.$Spin.show();
       http
         .post(api.INSERTLEVELCONFIG, {
-          level: vm.level
+          level: vm.level,
+          sort: Number(vm.sort)
         })
         .then(resp => {
           this.$Spin.hide();

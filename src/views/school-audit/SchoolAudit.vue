@@ -6,13 +6,23 @@
     </div>
     <div class="content">
       <div class="tab-bar">
-        <div class="tab-item" :class="tabIndex === 0?'chosed':''" @click="choseTab(0)">已审核</div>
-        <div class="tab-item" :class="tabIndex === 1?'chosed':''" @click="choseTab(1)">未审核</div>
+        <div class="tab-item" :class="tabIndex == 0?'chosed':''" @click="choseTab(0)">已审核</div>
+        <div class="tab-item" :class="tabIndex == 1?'chosed':''" @click="choseTab(1)">未审核</div>
         <div class="add-item" v-if="tabIndex === 2">
           {{tabText}}
           <Icon type="md-close" style="font-size:18px" @click="closeAdd" />
         </div>
+        <div class="add-button" @click="isShowExport = true">
+          <Icon type="md-arrow-down" style="font-size:20px" />导出通知书
+        </div>
       </div>
+      <Modal v-model="isShowExport" title="选择入学时间">
+        <el-date-picker v-model="exportDate" type="datetime" placeholder="选择日期时间"></el-date-picker>
+        <div slot="footer">
+          <Button type="text" size="large" @click="isShowExport=false">取消</Button>
+          <Button type="primary" size="large" @click="exportWordBySchool">确定</Button>
+        </div>
+      </Modal>
       <router-view></router-view>
     </div>
   </div>
@@ -21,11 +31,15 @@
 <script>
 import MHeader from "@/components/Header.vue";
 import UserInfo from "@/components/UserInfo.vue";
+import * as api from "@/service/apiList";
+import http from "@/service/service";
+import { TodateTime } from "@/common/tool/tool";
 export default {
   data() {
     return {
       tabIndex: 0,
-      tabText: "新增学生"
+      isShowExport: false,
+      exportDate: ""
     };
   },
   created() {
@@ -48,12 +62,6 @@ export default {
         });
       }
     },
-    addChild() {
-      this.tabIndex = 2;
-      this.$router.push({
-        path: "/schoolAudit/auditChild"
-      });
-    },
     routerChange() {
       let { id } = this.$route.query;
       if (id) {
@@ -67,14 +75,29 @@ export default {
         case "schoolAdd":
           tabIndex = 2;
           break;
-        case "registList":
+        case "auditList":
           tabIndex = 0;
           break;
-        case "savedList":
+        case "savedAudit":
           tabIndex = 1;
           break;
       }
       this.tabIndex = tabIndex;
+    },
+    exportWordBySchool() {
+      http
+        .get(api.EXPORTWORDBYSCHOOL, {
+          enterTime: TodateTime(this.exportDate)
+        })
+        .then(resp => {
+          if (resp.data.success) {
+            // window.location.href = `http://223.113.1.77:10058${resp.data.data}`;
+            console.log(`http://223.113.1.77:10058${resp.data.data}`);
+            this.isShowExport = false;
+          } else {
+            this.$Message.warning(resp.data.message);
+          }
+        });
     }
   },
   components: {

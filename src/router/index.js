@@ -71,7 +71,7 @@ const routes = [{
       redirect: 'savedList'
     }, {
       path: "/schoolAudit/savedList", //未审核
-      name: 'savedList',
+      name: 'savedAudit',
       component: resolve => require(['../views/school-audit/saved-list/SavedList.vue'], resolve)
     }, {
       path: "/schoolAudit/auditList", //已审核
@@ -79,7 +79,7 @@ const routes = [{
       component: resolve => require(['../views/school-audit/audit-list/AuditList.vue'], resolve)
     },{
       path: "/schoolAudit/auditChild", //子女审核
-      name: 'schoolAdd',
+      name: 'auditChild',
       component: resolve => require(['../views/school-audit/audit-child/AuditChild.vue'], resolve),
     }]
   },

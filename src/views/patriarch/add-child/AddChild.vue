@@ -3,7 +3,10 @@
     <div class="add-main">
       <div class="left">
         <div class="forecast-code" v-if="isDisabled">
-          <div class="header">预报名唯一码：<span style="font-size:18px;color:#64B3ED">{{forecastCode}}</span></div>
+          <div class="header">
+            预报名唯一码：
+            <span style="font-size:18px;color:#64B3ED">{{forecastCode}}</span>
+          </div>
         </div>
         <div class="student-info">
           <div class="header">学生信息</div>
@@ -1164,5 +1167,11 @@ export default {
 }
 /deep/.ivu-icon.ivu-icon-ios-close {
   color: #fff;
+}
+/deep/.ivu-input-disabled {
+  color: #2d3748;
+}
+/deep/.ivu-select-disabled .ivu-select-selection {
+  color: #2d3748;
 }
 </style>

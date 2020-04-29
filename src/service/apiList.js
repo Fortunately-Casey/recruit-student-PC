@@ -42,6 +42,7 @@ export const COMMUNITYCONFIG = "/education/manager/api/communityConfig"; //学�
 export const DELETESMALLCOMMUNITY = "/education/manager/api/deleteSmallCommunity"; //删除小区
 export const GETPARENTACCOUNTBYSCHOOLID = "/education/manager/api/getParentAccountBySchoolID"; //获取学校下管理的账号
 export const EXPORTWORDBYSCHOOL = "/education/manager/api/exportWordBySchool"; //导出入学通知书
+export const EXPORTSTUDENTBYONEORMORE = "/education/manager/api/exportStudentByOneOrMore"; //导出摸底情况
 
 
 /**
