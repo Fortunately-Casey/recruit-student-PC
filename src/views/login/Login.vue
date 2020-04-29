@@ -120,7 +120,7 @@ export default {
               });
             } else if (resp.data.data.identity === "03") {
               this.$router.push({
-                path: "/schoolManage"
+                path: "/schoolAudit"
               });
             } else if (resp.data.data.identity === "04") {
               this.$router.push({

@@ -16,8 +16,8 @@
 export default {
   data() {
     return {
-      userName: "18662858322",
-      userType: "学生家长",
+      userName: "",
+      userType: "",
       isShowLogout: false
     };
   },
@@ -29,7 +29,7 @@ export default {
     } else if (userInfo.identity === "02") {
       this.userType = `${userInfo.schoolName}打印老师`;
     } else if (userInfo.identity === "03") {
-      this.userType = `${userInfo.schoolName}录入老师`;
+      this.userType = `${userInfo.schoolName}审核老师`;
     } else if (userInfo.identity === "04") {
       this.userType = "学生家长";
     } else if (userInfo.identity === "00") {

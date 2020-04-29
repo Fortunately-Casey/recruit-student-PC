@@ -38,7 +38,7 @@ const routes = [{
     ]
   },
   {
-    path: '/schoolManage', //学校管理
+    path: '/schoolManage', //打印老师管理
     component: resolve => require(['../views/school-manage/SchoolManage.vue'], resolve),
     children: [{
         path: "/",
@@ -63,7 +63,28 @@ const routes = [{
     ]
   },
   {
-    path: '/schoolConfig', //学校管理
+    path: '/schoolAudit', //审核老师管理
+    component: resolve => require(['../views/school-audit/SchoolAudit.vue'], resolve),
+    children: [{
+      path: "/",
+      name: "schoolAudit",
+      redirect: 'savedList'
+    }, {
+      path: "/schoolAudit/savedList", //未审核
+      name: 'savedList',
+      component: resolve => require(['../views/school-audit/saved-list/SavedList.vue'], resolve)
+    }, {
+      path: "/schoolAudit/auditList", //已审核
+      name: 'auditList',
+      component: resolve => require(['../views/school-audit/audit-list/AuditList.vue'], resolve)
+    },{
+      path: "/schoolAudit/auditChild", //子女审核
+      name: 'schoolAdd',
+      component: resolve => require(['../views/school-audit/audit-child/AuditChild.vue'], resolve),
+    }]
+  },
+  {
+    path: '/schoolConfig', //学校配置
     name: "schoolConfig",
     component: resolve => require(['../views/school-config/SchoolConfig.vue'], resolve),
   },
@@ -72,7 +93,7 @@ const routes = [{
     component: resolve => require(['../views/admin-page/AdminPage.vue'], resolve),
     children: [{
       path: "/",
-      name: 'adminPage', 
+      name: 'adminPage',
       redirect: 'articleList'
     }, {
       path: "/adminPage/articleList", //文章列表
@@ -87,9 +108,9 @@ const routes = [{
       name: 'addArticle',
       component: resolve => require(['../views/admin-page/add-article/AddArticle.vue'], resolve),
     }]
-  },{
-    path:"/printPage",//打印页面
-    name:"printPage",
+  }, {
+    path: "/printPage", //打印页面
+    name: "printPage",
     component: resolve => require(["../views/school-manage/print-page/PrintPage.vue"], resolve)
   }
 ]

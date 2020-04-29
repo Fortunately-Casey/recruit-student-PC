@@ -25,6 +25,10 @@ export const SAVEANDCOMMIT = "/education/manager/api/saveAndCommit"; //保存和
 export const DELETESTUDENTBYID = "/education/manager/api/deleteStudentByID"; //删除学生
 export const GETSTUDENTDETAIL = "/education/manager/api/getStudentDetail"; //获取学生详情
 
+export const GETLISTLEVEL = "/education/manager/api/getListLevel"; //获取学生详情
+
+
+
   
 /**
  * 学校配置
