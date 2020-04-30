@@ -170,8 +170,8 @@
             <div class="has-house">
               <div class="label">是否有房产</div>
               <RadioGroup v-model="hasHouse">
-                <Radio label="是" :disabled="isDisabled"></Radio>
-                <Radio label="否" :disabled="isDisabled"></Radio>
+                <Radio label="是" :disabled="isDisabled || isDisableHasHouse"></Radio>
+                <Radio label="否" :disabled="isDisabled || isDisableHasHouse"></Radio>
               </RadioGroup>
             </div>
             <div class="house-nature" v-if="hasHouse === '是'">
@@ -500,7 +500,8 @@ export default {
       alternativeSchoolName: "",
       isChecked: false,
       isShowSuccess: false,
-      forecastCode: ""
+      forecastCode: "",
+      isDisableHasHouse: false
     };
   },
   mounted() {
@@ -569,6 +570,14 @@ export default {
           vm.alternativeSchoolID = Number(res.alternativeSchoolID);
           vm.streetId = res.smallCommunity.streetID;
           vm.communityId = res.smallCommunity.communityID;
+          if (this.schoolID == 4 || this.schoolID == 1) {
+            this.isDisableHasHouse = true;
+            this.isShowAlternative = true;
+            this.hasHouse = "是";
+          } else {
+            this.isShowAlternative = false;
+            this.isDisableHasHouse = false;
+          }
           if (vm.alternativeSchoolID) {
             vm.isShowAlternative = true;
           }
@@ -708,10 +717,13 @@ export default {
             this.schoolName = resp.data.data.schoolName;
             this.schoolLabel = resp.data.data.label;
             this.schoolID = resp.data.data.schoolID;
-            if (this.schoolName == "实验小学") {
+            if (this.schoolID == 4 || this.schoolID == 1) {
+              this.isDisableHasHouse = true;
               this.isShowAlternative = true;
+              this.hasHouse = "是";
             } else {
               this.isShowAlternative = false;
+              this.isDisableHasHouse = false;
             }
           } else {
             this.$Message.warning("未匹配到预报名学校！");
