@@ -187,7 +187,7 @@ export default {
           } else {
             this.$Message["error"]({
               background: true,
-              content: resp.data.data
+              content: resp.data.message
             });
           }
         });
@@ -211,7 +211,7 @@ export default {
           } else {
             this.$Message["error"]({
               background: true,
-              content: resp.data.data
+              content: resp.data.message
             });
           }
         });

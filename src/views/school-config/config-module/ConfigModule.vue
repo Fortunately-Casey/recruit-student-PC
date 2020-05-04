@@ -7,13 +7,14 @@
           <div class="date">
             <div class="label">选择时间段</div>
             <el-date-picker
-              v-model="value1"
+              v-model="value2"
               type="daterange"
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               style="width:400px"
             ></el-date-picker>
+            <Button type="primary" style="margin-left:20px" @click="commitDate">提交</Button>
           </div>
         </div>
         <div class="start-time">
@@ -21,7 +22,7 @@
           <div class="date">
             <div class="label">选择时间段</div>
             <el-date-picker
-              v-model="value2"
+              v-model="value1"
               type="daterange"
               range-separator="至"
               start-placeholder="开始日期"
@@ -89,7 +90,7 @@
         <FormItem label="社区">
           <Select v-model="formItem.communityID" placeholder="选择社区">
             <Option
-              :value="item.streetID"
+              :value="item.id"
               v-for="(item,index) in communityList"
               :key="index"
             >{{item.name}}</Option>
@@ -260,10 +261,10 @@ export default {
     },
     commitDate() {
       let params = {
-        enterSchoolBeginDate: this.toDate(this.value1[0]),
-        enterSchoolEndDate: this.toDate(this.value1[1]),
-        birthdayLimitStartDate: this.toDate(this.value2[0]),
-        birthdayLimitEndDate: this.toDate(this.value2[1])
+        birthdayLimitStartDate: this.toDate(this.value1[0]),
+        birthdayLimitEndDate: this.toDate(this.value1[1]),
+        enterSchoolBeginDate: this.toDate(this.value2[0]),
+        enterSchoolEndDate: this.toDate(this.value2[1])
       };
       if (!this.value1) {
         this.$Message["warning"]({
@@ -290,7 +291,7 @@ export default {
         } else {
           this.$Message["error"]({
             background: true,
-            content: resp.data.data
+            content: resp.data.message
           });
         }
       });
@@ -324,7 +325,7 @@ export default {
           } else {
             this.$Message["error"]({
               background: true,
-              content: resp.data.data
+              content: resp.data.message
             });
           }
         });
@@ -346,7 +347,7 @@ export default {
           } else {
             this.$Message["error"]({
               background: true,
-              content: resp.data.data
+              content: resp.data.message
             });
           }
         });
@@ -396,7 +397,7 @@ export default {
         } else {
           this.$Message["error"]({
             background: true,
-            content: resp.data.data
+            content: resp.data.message
           });
         }
       });
