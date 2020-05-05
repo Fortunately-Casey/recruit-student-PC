@@ -917,8 +917,8 @@ export default {
       };
       this.$Spin.show();
       http.post(api.SAVEANDCOMMIT, params).then(resp => {
+        this.$Spin.hide();
         if (resp.data.success) {
-          this.$Spin.hide();
           this.$Message.success(commit ? "提交成功" : "保存成功");
           vm.$router.push({
             path: "/schoolAudit/auditList"
