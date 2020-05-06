@@ -45,10 +45,10 @@
           <div class="title1"></div>
           <div class="logo5"></div>
         </div>
-        <div class="item">
+        <!-- <div class="item">
           <div class="title2"></div>
           <div class="logo1"></div>
-        </div>
+        </div> -->
         <div class="item" @click="toLogin">
           <div class="title3"></div>
           <div class="logo2"></div>

@@ -552,10 +552,12 @@ export default {
     this.$nextTick(function() {});
   },
   methods: {
-    getLevelList() {
+    getLevelList(schoolID) {
       let vm = this;
       this.isShowLevelList = true;
-      http.get(api.GETLISTLEVEL, {}, this).then(resp => {
+      http.get(api.GETLISTLEVEL, {
+        schoolID:schoolID
+      }, this).then(resp => {
         this.isShowLevelList = false;
         this.levelList = resp.data.data;
         if (vm.levelID) {
@@ -584,7 +586,7 @@ export default {
         .then(resp => {
           this.$Spin.hide();
           let res = resp.data.data;
-          this.getLevelList();
+          this.getLevelList(resp.data.data.school.schoolID);
           if (res.auditStatus == 1 || res.auditStatus == 2) {
             vm.isDisabled = true;
           } else {
@@ -1255,7 +1257,7 @@ export default {
         }
         .patriarch-info {
           .parent {
-            margin-top: 20px;
+            margin-top: 15px;
             .identity {
               display: flex;
               .name,

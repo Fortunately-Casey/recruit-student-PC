@@ -20,7 +20,10 @@
             <div :class="item.forecastCode?'left-logo1':'left-logo2'"></div>
           </div>
           <div class="right">
-            <div class="name">{{item.name}}</div>
+            <div class="name">
+              {{item.name}}
+              <div class="audit-status">{{returnAuditStatus(item.auditStatus)}}</div>
+            </div>
             <div class="idCard">{{item.idCard}}</div>
           </div>
         </div>
@@ -82,7 +85,7 @@ export default {
     },
     getChildrenList() {
       this.$Spin.show();
-      http.get(api.GETSTUDENTBYADMISSIONID,{},this).then(resp => {
+      http.get(api.GETSTUDENTBYADMISSIONID, {}, this).then(resp => {
         this.$Spin.hide();
         this.list = resp.data.data;
       });
@@ -90,9 +93,13 @@ export default {
     deleteStudent() {
       let vm = this;
       http
-        .delete(api.DELETESTUDENTBYID, {
-          studentID: vm.deleteID
-        },this)
+        .delete(
+          api.DELETESTUDENTBYID,
+          {
+            studentID: vm.deleteID
+          },
+          this
+        )
         .then(resp => {
           if (resp.data.success) {
             vm.$Message.success("删除成功！");
@@ -102,6 +109,15 @@ export default {
             vm.$Message.error("删除失败！");
           }
         });
+    },
+    returnAuditStatus(status) {
+      if(status == 0) {
+        return "未审核"
+      }else if(status == 1) {
+        return "通过"
+      }else if(status == 2) {
+        return "未通过"
+      }
     },
     deleteChild(item) {
       this.deleteID = item.id;
@@ -181,6 +197,9 @@ export default {
             padding-left: 10px;
             font-size: 18px;
             font-weight: bold;
+            .audit-status {
+              float: right;
+            }
           }
           .idCard {
             padding-left: 10px;

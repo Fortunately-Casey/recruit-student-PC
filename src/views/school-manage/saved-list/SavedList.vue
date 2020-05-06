@@ -36,8 +36,8 @@
       <div style="text-align:center">
         <p>确认是否删除该学生信息?</p>
       </div>
-      <div slot="footer">
-        <Button type="error" size="large" long @click="commitDelete">删除</Button>
+      <div slot="footer" style="text-align:center">
+        <Button type="error" size="large" @click="commitDelete">删除</Button>
       </div>
     </Modal>
   </div>

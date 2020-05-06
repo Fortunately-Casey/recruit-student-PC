@@ -1183,7 +1183,7 @@ export default {
       }
       .patriarch-info {
         .parent {
-          margin-top: 20px;
+          margin-top: 15px;
           .identity {
             display: flex;
             .name,

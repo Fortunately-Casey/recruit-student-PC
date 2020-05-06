@@ -21,11 +21,17 @@
         <div class="address">户口所在地</div>
         <div class="value">{{ provincesName + cityName + areaName }}</div>
       </div>
-      <div class="tep4">
+      <div class="tep4" v-if="property">
         <div class="house-number">房产证号/发票号</div>
         <div class="value">{{houseNumbers}}</div>
       </div>
-      <div class="tep5">
+      <div class="tep4" v-else>
+        <div class="live-date">居住证有效期</div>
+        <div class="value">{{permitResidencePeriod}}</div>
+        <div class="work-date">劳动合同有效期</div>
+        <div class="value">{{laborContractPeriod}}</div>
+      </div>
+      <div class="tep5" v-if="property">
         <div class="house-owner">房产所有人</div>
         <div style="width:200px;font-size:22px;text-align:center">{{houseOwner}}</div>
         <div class="relation">与所有人关系</div>
@@ -33,11 +39,13 @@
         <div class="house-nature">房产性质</div>
         <div class="value">{{returnNature(houseNature)}}</div>
       </div>
+      <div class="tep5" v-else>
+        <div class="house-owner">养老保险所在地</div>
+        <div class="value">{{pensionUnitsAddress}}</div>
+      </div>
       <div class="tep6">
         <div class="house-owner">小区</div>
         <div style="width:200px;font-size:22px;text-align:center">{{smallCommunityName}}</div>
-        <div class="relation">栋/室</div>
-        <div class="value">{{detailAddress}}</div>
       </div>
       <div class="tep7">
         <div class="address">分配校区</div>
@@ -65,8 +73,8 @@
         <div class="phone">{{parents[1].linkPhone}}</div>
       </div>
     </div>
-    <div class="line"></div>
-    <div class="grade">
+    <div class="line" v-if="isShowAlternative"></div>
+    <div class="grade" v-if="isShowAlternative">
       新河校区打分
       <div class="next-school">
         <div class="name">第二校区选择：</div>
@@ -74,7 +82,7 @@
       </div>
     </div>
     <div class="grade-table">
-      <div class="top">
+      <div class="top" v-if="isShowAlternative">
         <div class="left-name">打分自评</div>
         <div class="content">
           <div class="one">
@@ -108,7 +116,7 @@
           <div class="six"></div>
         </div>
       </div>
-      <div class="bottom">
+      <div class="bottom" v-if="isShowAlternative">
         <div class="school-audit">学校审核</div>
         <div class="one">房产得分</div>
         <div class="two"></div>
@@ -117,7 +125,16 @@
         <div class="five">合计</div>
         <div class="six"></div>
       </div>
-      <div class="commitment-box">
+      <div class="commitment-box1" v-if="isShowAlternative">
+        <div class="one">
+          本人承诺：如有弄虚作假，提供虚假材料的，一经发现，对其一入学子女作退学或转学处理，由此产生的不良影响，本人愿意承担一切后果。
+          <div class="commitment-person">承诺人：</div>
+        </div>
+        <div class="two">
+          <div class="remark">备注</div>
+        </div>
+      </div>
+      <div class="commitment-box2" v-else>
         <div class="one">
           本人承诺：如有弄虚作假，提供虚假材料的，一经发现，对其一入学子女作退学或转学处理，由此产生的不良影响，本人愿意承担一切后果。
           <div class="commitment-person">承诺人：</div>
@@ -141,6 +158,8 @@ import http from "@/service/service";
 export default {
   data() {
     return {
+      isShowAlternative:true,
+      property:false,
       schoolName: "",
       forecastCode: "",
       name: "",
@@ -155,6 +174,9 @@ export default {
       houseNature: "",
       smallCommunityName: "",
       detailAddress: "",
+      laborContractPeriod:"",
+      permitResidencePeriod:"",
+      pensionUnitsAddress:"",
       parents: [
         {
           sort: 1,
@@ -206,6 +228,19 @@ export default {
           vm.smallCommunityName = resp.data.data.smallCommunityName;
           vm.detailAddress = resp.data.data.detailAddress;
           vm.parents = resp.data.data.parents;
+          vm.laborContractPeriod = resp.data.data.laborContractPeriod;
+          vm.pensionUnitsAddress = resp.data.data.pensionUnitsAddress;
+          vm.permitResidencePeriod = resp.data.data.permitResidencePeriod;
+          if(resp.data.data.school.schoolCode  != '0401') {
+            vm.isShowAlternative = false;
+          }else {
+            vm.isShowAlternative = true;
+          }
+          if(resp.data.data.property) {
+            vm.property = true;
+          }else {
+            vm.property = false;
+          }
           setTimeout(() => {
             window.print();
           }, 1000);
@@ -319,6 +354,19 @@ export default {
         font-size: 22px;
         border-right: 1px solid #000;
       }
+      .live-date {
+        width: 200px;
+        text-align: center;
+        font-size: 22px;
+        border-right: 1px solid #000;
+      }
+      .work-date {
+        width: 200px;
+        text-align: center;
+        font-size: 22px;
+        border-right: 1px solid #000;
+        border-left: 1px solid #000;
+      }
       .birthday,
       .sex {
         border-left: 1px solid #000;
@@ -361,8 +409,8 @@ export default {
   }
   .grade-table {
     border-top: 1px solid #000;
-    border-left: 1px solid #000;
-    border-right: 1px solid #000;
+    // border-left: 1px solid #000;
+    // border-right: 1px solid #000;
     height: 200px;
     .top {
       height: 100px;
@@ -496,7 +544,7 @@ export default {
         width: 100px;
       }
     }
-    .commitment-box {
+    .commitment-box1 {
       margin-top: 20px;
       height: 250px;
       border-top: 1px solid #000;
@@ -523,6 +571,41 @@ export default {
           line-height: 100px;
           text-align: center;
         }
+      }
+    }
+    .commitment-box2 {
+      margin-top: 20px;
+      height: 550px;
+      border-top: 1px solid #000;
+      border-left: 1px solid #000;
+      border-right: 1px solid #000;
+      .one,
+      .two {
+        // height: 50%;
+        border-bottom: 1px solid #000;
+        text-indent: 30px;
+        font-size: 20px;
+        position: relative;
+        .commitment-person {
+          font-size: 20px;
+          position: absolute;
+          right: 200px;
+          bottom: 10px;
+        }
+        .remark {
+          height: 100%;
+          width: 200px;
+          border-right: 1px solid #000;
+          font-size: 22px;
+          line-height: 100px;
+          text-align: center;
+        }
+      }
+      .one {
+        height: 65%;
+      }
+      .two {
+        height: 35%;
       }
     }
     .signature {
