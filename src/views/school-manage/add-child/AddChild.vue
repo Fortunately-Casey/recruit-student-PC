@@ -26,6 +26,7 @@
                 style="width: 200px"
                 v-model="birthday"
                 :disabled="isDisabled"
+                @on-change="birthdayChange"
               ></DatePicker>
             </div>
           </div>
@@ -520,9 +521,13 @@ export default {
       let vm = this;
       this.$Spin.show();
       http
-        .get(api.GETSTUDENTDETAIL, {
-          ID: id
-        },this)
+        .get(
+          api.GETSTUDENTDETAIL,
+          {
+            ID: id
+          },
+          this
+        )
         .then(resp => {
           this.$Spin.hide();
           let res = resp.data.data;
@@ -582,9 +587,13 @@ export default {
           if (vm.streetId) {
             this.spinShow1 = true;
             http
-              .get(api.GETCOMMUNITYLIST, {
-                streetID: vm.streetId
-              },this)
+              .get(
+                api.GETCOMMUNITYLIST,
+                {
+                  streetID: vm.streetId
+                },
+                this
+              )
               .then(resp => {
                 this.spinShow1 = false;
                 this.communityList = resp.data.data;
@@ -593,9 +602,13 @@ export default {
           if (vm.communityId) {
             this.spinShow1 = true;
             http
-              .get(api.GETSMALLCOMMUNITYBYCOMMUNITYID, {
-                communityID: vm.communityId
-              },this)
+              .get(
+                api.GETSMALLCOMMUNITYBYCOMMUNITYID,
+                {
+                  communityID: vm.communityId
+                },
+                this
+              )
               .then(resp => {
                 this.spinShow1 = false;
                 this.smallCommunityList = resp.data.data;
@@ -603,9 +616,13 @@ export default {
           }
           if (vm.provinceID) {
             http
-              .get(api.GETCITYLIST, {
-                parentID: vm.provinceID
-              },this)
+              .get(
+                api.GETCITYLIST,
+                {
+                  parentID: vm.provinceID
+                },
+                this
+              )
               .then(resp => {
                 this.spinShow = false;
                 vm.cityList = resp.data.data;
@@ -613,9 +630,13 @@ export default {
           }
           if (vm.cityID) {
             http
-              .get(api.GETCITYLIST, {
-                parentID: vm.cityID
-              },this)
+              .get(
+                api.GETCITYLIST,
+                {
+                  parentID: vm.cityID
+                },
+                this
+              )
               .then(resp => {
                 this.spinShow = false;
                 vm.streetList = resp.data.data;
@@ -625,14 +646,14 @@ export default {
     },
     // 获取备选学校
     getSchoolList() {
-      http.get(api.GETSCHOOLLIST,{},this).then(resp => {
+      http.get(api.GETSCHOOLLIST, {}, this).then(resp => {
         this.schoolList = resp.data.data;
       });
     },
     // 获取街道
     getStreetList() {
       this.spinShow1 = true;
-      http.get(api.GETSTREETLIST,{},this).then(resp => {
+      http.get(api.GETSTREETLIST, {}, this).then(resp => {
         this.spinShow1 = false;
         this.street = resp.data.data;
       });
@@ -640,7 +661,7 @@ export default {
     // 获取省
     getProvinceArea() {
       this.spinShow = true;
-      http.get(api.GETPROVINCEAREA,{},this).then(resp => {
+      http.get(api.GETPROVINCEAREA, {}, this).then(resp => {
         this.spinShow = false;
         this.provinceList = resp.data.data;
       });
@@ -651,9 +672,13 @@ export default {
       this.spinShow = true;
       this.provincesName = value.label;
       http
-        .get(api.GETCITYLIST, {
-          parentID: vm.provinceID
-        },this)
+        .get(
+          api.GETCITYLIST,
+          {
+            parentID: vm.provinceID
+          },
+          this
+        )
         .then(resp => {
           vm.spinShow = false;
           vm.cityList = resp.data.data;
@@ -670,9 +695,13 @@ export default {
       this.spinShow = true;
       this.cityName = value.label;
       http
-        .get(api.GETCITYLIST, {
-          parentID: vm.cityID
-        },this)
+        .get(
+          api.GETCITYLIST,
+          {
+            parentID: vm.cityID
+          },
+          this
+        )
         .then(resp => {
           this.spinShow = false;
           vm.streetList = resp.data.data;
@@ -688,9 +717,13 @@ export default {
     choseStreet(value) {
       this.spinShow1 = true;
       http
-        .get(api.GETCOMMUNITYLIST, {
-          streetID: value
-        },this)
+        .get(
+          api.GETCOMMUNITYLIST,
+          {
+            streetID: value
+          },
+          this
+        )
         .then(resp => {
           this.spinShow1 = false;
           this.communityList = resp.data.data;
@@ -706,9 +739,13 @@ export default {
         return;
       }
       http
-        .get(api.GETSMALLCOMMUNITYBYCOMMUNITYID, {
-          communityID: value
-        },this)
+        .get(
+          api.GETSMALLCOMMUNITYBYCOMMUNITYID,
+          {
+            communityID: value
+          },
+          this
+        )
         .then(resp => {
           this.spinShow1 = false;
           this.smallCommunityID = "";
@@ -724,10 +761,14 @@ export default {
       this.smallCommunityName = value.label;
       this.spinShow1 = true;
       http
-        .get(api.GETSCHOOLBYSMALLCOMMUNITYID, {
-          smallCommunityID: this.smallCommunityID,
-          birthday: this.todate(this.birthday)
-        },this)
+        .get(
+          api.GETSCHOOLBYSMALLCOMMUNITYID,
+          {
+            smallCommunityID: this.smallCommunityID,
+            birthday: this.todate(this.birthday)
+          },
+          this
+        )
         .then(resp => {
           this.spinShow1 = false;
           if (resp.data.data) {
@@ -746,6 +787,37 @@ export default {
             this.$Message.warning("未匹配到预报名学校！");
           }
         });
+    },
+    birthdayChange() {
+      if (this.smallCommunityID) {
+        http
+          .get(
+            api.GETSCHOOLBYSMALLCOMMUNITYID,
+            {
+              smallCommunityID: this.smallCommunityID,
+              birthday: this.todate(this.birthday)
+            },
+            this
+          )
+          .then(resp => {
+            this.spinShow1 = false;
+            if (resp.data.data) {
+              this.schoolName = resp.data.data.schoolName;
+              this.schoolLabel = resp.data.data.label;
+              this.schoolID = resp.data.data.schoolID;
+              if (resp.data.data.schoolCode == "0401") {
+                this.isDisableHasHouse = true;
+                this.isShowAlternative = true;
+                this.hasHouse = "是";
+              } else {
+                this.isShowAlternative = false;
+                this.isDisableHasHouse = false;
+              }
+            } else {
+              this.$Message.warning("未匹配到预报名学校！");
+            }
+          });
+      }
     },
     selectOpen() {
       if (!this.birthday) {
@@ -860,7 +932,7 @@ export default {
         alternativeSchoolID: vm.alternativeSchoolID
       };
       this.$Spin.show();
-      http.post(api.SAVEANDCOMMIT, params,this).then(resp => {
+      http.post(api.SAVEANDCOMMIT, params, this).then(resp => {
         if (resp.data.success) {
           this.$Spin.hide();
           if (commit) {
