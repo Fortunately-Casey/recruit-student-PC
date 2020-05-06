@@ -625,14 +625,14 @@ export default {
     },
     // 获取备选学校
     getSchoolList() {
-      http.get(api.GETSCHOOLLIST).then(resp => {
+      http.get(api.GETSCHOOLLIST,{},this).then(resp => {
         this.schoolList = resp.data.data;
       });
     },
     // 获取街道
     getStreetList() {
       this.spinShow1 = true;
-      http.get(api.GETSTREETLIST).then(resp => {
+      http.get(api.GETSTREETLIST,{},this).then(resp => {
         this.spinShow1 = false;
         this.street = resp.data.data;
       });
@@ -640,7 +640,7 @@ export default {
     // 获取省
     getProvinceArea() {
       this.spinShow = true;
-      http.get(api.GETPROVINCEAREA).then(resp => {
+      http.get(api.GETPROVINCEAREA,{},this).then(resp => {
         this.spinShow = false;
         this.provinceList = resp.data.data;
       });
@@ -860,7 +860,7 @@ export default {
         alternativeSchoolID: vm.alternativeSchoolID
       };
       this.$Spin.show();
-      http.post(api.SAVEANDCOMMIT, params).then(resp => {
+      http.post(api.SAVEANDCOMMIT, params,this).then(resp => {
         if (resp.data.success) {
           this.$Spin.hide();
           if (commit) {

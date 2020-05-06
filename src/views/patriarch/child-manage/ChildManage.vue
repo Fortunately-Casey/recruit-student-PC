@@ -82,7 +82,7 @@ export default {
     },
     getChildrenList() {
       this.$Spin.show();
-      http.get(api.GETSTUDENTBYADMISSIONID).then(resp => {
+      http.get(api.GETSTUDENTBYADMISSIONID,{},this).then(resp => {
         this.$Spin.hide();
         this.list = resp.data.data;
       });

@@ -40,7 +40,7 @@ export default {
   },
   methods: {
     exportExcel() {
-      http.get(api.EXPORTSTUDENTBYONEORMORE).then(resp => {
+      http.get(api.EXPORTSTUDENTBYONEORMORE,{},this).then(resp => {
         if (resp.data.success) {
           // window.location.href = `http://223.113.1.77:10058${resp.data.data}`;
           console.log(`http://223.113.1.77:10058${resp.data.data}`);

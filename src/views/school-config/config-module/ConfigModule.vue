@@ -221,12 +221,12 @@ export default {
   },
   methods: {
     getStreetList() {
-      http.get(api.GETSTREETLIST).then(resp => {
+      http.get(api.GETSTREETLIST,{},this).then(resp => {
         this.streetList = resp.data.data;
       });
     },
     getBoundaryList() {
-      http.get(api.GETBOUNDARYLIST).then(resp => {
+      http.get(api.GETBOUNDARYLIST,{},this).then(resp => {
         this.boundaryList = resp.data.data;
       });
     },
@@ -244,7 +244,7 @@ export default {
     getConfig() {
       let vm = this;
       this.$Spin.show();
-      http.get(api.GETSCHOOLCONFIG).then(resp => {
+      http.get(api.GETSCHOOLCONFIG,{},this).then(resp => {
         this.$Spin.hide();
         vm.value2 = [
           new Date(
@@ -295,7 +295,7 @@ export default {
         return;
       }
       this.$Spin.show();
-      http.post(api.SCHOOLINFORMATIONCONFIG, params).then(resp => {
+      http.post(api.SCHOOLINFORMATIONCONFIG, params,this).then(resp => {
         this.$Spin.hide();
         if (resp.data.success) {
           this.$Message["success"]({
@@ -400,7 +400,7 @@ export default {
         smallCommunityName: this.formItem.smallCommunityName
       };
       this.$Spin.show();
-      http.post(api.COMMUNITYCONFIG, params).then(resp => {
+      http.post(api.COMMUNITYCONFIG, params,this).then(resp => {
         this.$Spin.hide();
         if (resp.data.success) {
           this.$Message["success"]({

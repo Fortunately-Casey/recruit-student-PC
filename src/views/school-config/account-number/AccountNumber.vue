@@ -142,7 +142,7 @@ export default {
         adminUserID:vm.adminUserID,
         password:vm.newPassword,
         confirmPassword:vm.confirmPassword
-      }).then((resp) => {
+      },this).then((resp) => {
         this.$Spin.hide();
         if(resp.data.success) {
           this.$Message.success("修改成功！");

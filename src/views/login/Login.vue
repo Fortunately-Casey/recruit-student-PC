@@ -92,7 +92,7 @@ export default {
           password: vm.password,
           type: 2
         };
-        http.post(api.Login, params).then(resp => {
+        http.post(api.Login, params,this).then(resp => {
           if (resp.data.success) {
             this.$Spin.hide();
             this.$Message["success"]({
@@ -149,7 +149,7 @@ export default {
           password: vm.registerPW,
           confirmPassword: vm.confirmPW
         };
-        http.post(api.REGISTERED, params).then(resp => {
+        http.post(api.REGISTERED, params,this).then(resp => {
           if (resp.data.success) {
             this.$Spin.hide();
             this.$Message["success"]({

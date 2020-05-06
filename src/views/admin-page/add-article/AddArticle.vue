@@ -67,7 +67,7 @@ export default {
         titleUrl: this.url
       };
       this.$Spin.show();
-      http.post(api.INSRERTNEWSCONFIG, params).then(resp => {
+      http.post(api.INSRERTNEWSCONFIG, params,this).then(resp => {
         this.$Spin.hide();
         if (resp.data.success) {
           this.isShowAdd = false;

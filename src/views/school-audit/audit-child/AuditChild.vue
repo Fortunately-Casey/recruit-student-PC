@@ -554,7 +554,7 @@ export default {
     getLevelList() {
       let vm = this;
       this.isShowLevelList = true;
-      http.get(api.GETLISTLEVEL).then(resp => {
+      http.get(api.GETLISTLEVEL,{},this).then(resp => {
         this.isShowLevelList = false;
         this.levelList = resp.data.data;
         if (vm.levelID) {
@@ -696,14 +696,14 @@ export default {
     },
        // 获取备选学校
     getSchoolList() {
-      http.get(api.GETSCHOOLLIST).then(resp => {
+      http.get(api.GETSCHOOLLIST,{},this).then(resp => {
         this.schoolList = resp.data.data;
       });
     },
     // 获取街道
     getStreetList() {
       this.spinShow1 = true;
-      http.get(api.GETSTREETLIST).then(resp => {
+      http.get(api.GETSTREETLIST,{},this).then(resp => {
         this.spinShow1 = false;
         this.street = resp.data.data;
       });
@@ -711,7 +711,7 @@ export default {
     // 获取省
     getProvinceArea() {
       this.spinShow = true;
-      http.get(api.GETPROVINCEAREA).then(resp => {
+      http.get(api.GETPROVINCEAREA,{},this).then(resp => {
         this.spinShow = false;
         this.provinceList = resp.data.data;
       });
@@ -935,7 +935,7 @@ export default {
         point: vm.point
       };
       this.$Spin.show();
-      http.post(api.SAVEANDCOMMIT, params).then(resp => {
+      http.post(api.SAVEANDCOMMIT, params,this).then(resp => {
         this.$Spin.hide();
         if (resp.data.success) {
           this.$Message.success(commit ? "提交成功" : "保存成功");

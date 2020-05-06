@@ -34,7 +34,7 @@ export default {
     let vm = this;
     this.$nextTick(function() {
       this.$Spin.show();
-      http.get(api.SHOWSTATISTICINFO).then(resp => {
+      http.get(api.SHOWSTATISTICINFO,{},this).then(resp => {
         this.$Spin.hide();
         let res = resp.data.data;
         vm.createStreet(res.streetStatistics);
