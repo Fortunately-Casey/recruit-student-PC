@@ -93,8 +93,8 @@ export default {
           type: 2
         };
         http.post(api.Login, params,this).then(resp => {
+          this.$Spin.hide();
           if (resp.data.success) {
-            this.$Spin.hide();
             this.$Message["success"]({
               background: true,
               content: "登录成功"
