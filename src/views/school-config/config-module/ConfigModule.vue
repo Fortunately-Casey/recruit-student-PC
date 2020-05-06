@@ -246,7 +246,7 @@ export default {
       this.$Spin.show();
       http.get(api.GETSCHOOLCONFIG,{},this).then(resp => {
         this.$Spin.hide();
-        vm.value2 = [
+        vm.value1 = [
           new Date(
             resp.data.data.school.enterSchoolBeginDate
               ? resp.data.data.school.enterSchoolBeginDate
@@ -258,7 +258,7 @@ export default {
               : ""
           )
         ];
-        vm.value1 = [
+        vm.value2 = [
           new Date(
             resp.data.data.school.birthdayLimitStartDate
               ? resp.data.data.school.birthdayLimitStartDate
@@ -276,10 +276,10 @@ export default {
     },
     commitDate() {
       let params = {
-        birthdayLimitStartDate: this.toDate(this.value1[0]),
-        birthdayLimitEndDate: this.toDate(this.value1[1]),
-        enterSchoolBeginDate: this.toDate(this.value2[0]),
-        enterSchoolEndDate: this.toDate(this.value2[1])
+        birthdayLimitStartDate: this.toDate(this.value2[0]),
+        birthdayLimitEndDate: this.toDate(this.value2[1]),
+        enterSchoolBeginDate: this.toDate(this.value1[0]),
+        enterSchoolEndDate: this.toDate(this.value1[1])
       };
       if (!this.value1) {
         this.$Message["warning"]({
