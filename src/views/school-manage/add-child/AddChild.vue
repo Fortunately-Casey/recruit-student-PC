@@ -556,7 +556,7 @@ export default {
           vm.lastSchoolName = res.preSchoolInformation
             ? res.preSchoolInformation
             : res.primarySchoolName;
-          vm.schoolLabel = res.school?res.school.label:"";
+          vm.schoolLabel = res.school ? res.school.label : "";
           vm.parents = res.parents;
           vm.hasHouse = res.property ? "是" : "否";
           vm.houseNature = res.houseNature;
@@ -574,9 +574,11 @@ export default {
           vm.otherRemark = res.otherRemark;
           vm.alternativeSchoolName = res.alternativeSchoolName;
           vm.alternativeSchoolID = Number(res.alternativeSchoolID);
-          vm.streetId = res.smallCommunity?res.smallCommunity.streetID:'';
-          vm.communityId = res.smallCommunity?res.smallCommunity.communityID:"";
-          if (res.schoolCode == "0401") {
+          vm.streetId = res.smallCommunity ? res.smallCommunity.streetID : "";
+          vm.communityId = res.smallCommunity
+            ? res.smallCommunity.communityID
+            : "";
+          if (res.school.schoolCode == "0401") {
             this.isDisableHasHouse = true;
             this.isShowAlternative = true;
             this.hasHouse = "是";
@@ -716,6 +718,9 @@ export default {
     // 选择街道
     choseStreet(value) {
       this.spinShow1 = true;
+      this.schoolName = "";
+      this.isShowAlternative = false;
+      this.alternativeSchoolID = "";
       http
         .get(
           api.GETCOMMUNITYLIST,
@@ -734,6 +739,9 @@ export default {
     // 选择社区
     choseCommunity(value) {
       this.spinShow1 = true;
+      this.schoolName = "";
+      this.isShowAlternative = false;
+      this.alternativeSchoolID = "";
       if (!value) {
         this.spinShow1 = false;
         return;

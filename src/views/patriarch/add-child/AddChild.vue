@@ -576,7 +576,7 @@ export default {
           vm.communityId = res.smallCommunity
             ? res.smallCommunity.communityID
             : "";
-          if (res.schoolCode == "0401") {
+          if (res.school.schoolCode == "0401") {
             this.isDisableHasHouse = true;
             this.isShowAlternative = true;
             this.hasHouse = "是";
@@ -716,6 +716,9 @@ export default {
     // 选择街道
     choseStreet(value) {
       this.spinShow1 = true;
+      this.schoolName = "";
+      this.isShowAlternative = false;
+      this.alternativeSchoolID = "";
       http
         .get(
           api.GETCOMMUNITYLIST,
@@ -734,6 +737,9 @@ export default {
     // 选择社区
     choseCommunity(value) {
       this.spinShow1 = true;
+      this.schoolName = "";
+      this.isShowAlternative = false;
+      this.alternativeSchoolID = "";
       if (!value) {
         this.spinShow1 = false;
         return;
@@ -932,6 +938,7 @@ export default {
         alternativeSchoolID: vm.alternativeSchoolID
       };
       this.$Spin.show();
+      console.log(JSON.stringify(params));
       http.post(api.SAVEANDCOMMIT, params, this).then(resp => {
         this.$Spin.hide();
         if (resp.data.success) {

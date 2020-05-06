@@ -636,7 +636,7 @@ export default {
           vm.crossIndex = res.auditStatus == 0 ? 0 : res.auditStatus - 1;
           vm.levelID = res.levelID;
           vm.point = res.point;
-          if (res.schoolCode == "0401") {
+          if (res.school.schoolCode == "0401") {
             this.isDisableHasHouse = true;
             this.isShowAlternative = true;
             this.hasHouse = "是";
@@ -789,6 +789,9 @@ export default {
     // 选择街道
     choseStreet(value) {
       this.spinShow1 = true;
+      this.schoolName = "";
+      this.isShowAlternative = false;
+      this.alternativeSchoolID = "";
       http
         .get(
           api.GETCOMMUNITYLIST,
@@ -807,6 +810,9 @@ export default {
     // 选择社区
     choseCommunity(value) {
       this.spinShow1 = true;
+      this.schoolName = "";
+      this.isShowAlternative = false;
+      this.alternativeSchoolID = "";
       if (!value) {
         this.spinShow1 = false;
         return;
