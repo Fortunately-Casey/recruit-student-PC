@@ -235,7 +235,7 @@ export default {
       http
         .get(api.GETCOMMUNITYLIST, {
           streetID: id
-        })
+        },this)
         .then(resp => {
           this.$Spin.hide();
           this.communityList = resp.data.data;
@@ -328,7 +328,7 @@ export default {
         .post(api.INSERTLEVELCONFIG, {
           level: vm.level,
           sort: Number(vm.sort)
-        })
+        },this)
         .then(resp => {
           this.$Spin.hide();
           if (resp.data.success) {
@@ -350,7 +350,7 @@ export default {
       http
         .delete(api.DELETELEVELCONFIG, {
           ID: item.id
-        })
+        },this)
         .then(resp => {
           this.$Spin.hide();
           if (resp.data.success) {
@@ -425,7 +425,7 @@ export default {
       http
         .delete(api.DELETESMALLCOMMUNITY, {
           smallCommunityID: this.deleteID
-        })
+        },this)
         .then(resp => {
           this.$Spin.hide();
           if (resp.data.success) {

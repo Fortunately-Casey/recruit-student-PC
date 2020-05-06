@@ -105,7 +105,7 @@ export default {
           currPage: vm.currPage,
           pageSize: vm.pageSize,
           adminUser: vm.formInline.adminUser
-        })
+        },this)
         .then(resp => {
           this.$Spin.hide();
           this.list = resp.data.data;

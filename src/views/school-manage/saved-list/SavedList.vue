@@ -187,7 +187,7 @@ export default {
       http
         .delete(api.DELETESTUDENTBYID, {
           studentID: vm.deleteID
-        })
+        },this)
         .then(resp => {
           if (resp.data.success) {
             vm.$Message.success("删除成功！");
@@ -221,7 +221,7 @@ export default {
           auditStatus: 0,
           currPage: vm.pageIndex,
           pageSize: vm.pageSize
-        })
+        },this)
         .then(resp => {
           this.$Spin.hide();
           vm.list = resp.data.data;

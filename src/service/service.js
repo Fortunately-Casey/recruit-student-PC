@@ -5,7 +5,6 @@ import {
 
 let http = {};
 http.post = function (apiUrl, params, vue) {
-  console.log(vue);
   let token = window.localStorage.getItem("token");
   const url = getURL(apiUrl);
   return axios
@@ -28,7 +27,6 @@ http.post = function (apiUrl, params, vue) {
 };
 
 http.get = function (apiUrl, params, vue) {
-
   let token = window.localStorage.getItem("token");
   const url = getURL(apiUrl);
   return axios

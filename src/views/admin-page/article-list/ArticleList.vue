@@ -150,7 +150,7 @@ export default {
           currPage: vm.pageIndex,
           pageSize: vm.pageSize,
           title: vm.formInline.title
-        })
+        },this)
         .then(resp => {
           this.$Spin.hide();
           this.newsList = resp.data.data;
@@ -175,7 +175,7 @@ export default {
       http
         .delete(api.DELETENEWSCONFIG, {
           ID: this.deleteID
-        })
+        },this)
         .then(resp => {
           if (resp.data.success) {
             this.isShowDelete = false;
@@ -199,7 +199,7 @@ export default {
           id: vm.formItem.id,
           title: vm.formItem.title,
           titleUrl: vm.formItem.titleUrl
-        })
+        },this)
         .then(resp => {
           if (resp.data.success) {
             this.isShowEdit = false;

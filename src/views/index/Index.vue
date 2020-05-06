@@ -90,7 +90,7 @@ export default {
           currPage: 1,
           pageSize: 100,
           title: ""
-        })
+        },this)
         .then(resp => {
           this.$Spin.hide();
           this.newsList = resp.data.data;

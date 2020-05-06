@@ -92,7 +92,7 @@ export default {
       http
         .delete(api.DELETESTUDENTBYID, {
           studentID: vm.deleteID
-        })
+        },this)
         .then(resp => {
           if (resp.data.success) {
             vm.$Message.success("删除成功！");

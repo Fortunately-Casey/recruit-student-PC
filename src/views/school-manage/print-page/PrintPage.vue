@@ -188,7 +188,7 @@ export default {
       http
         .get(api.GETSTUDENTDETAIL, {
           ID: id
-        })
+        },this)
         .then(resp => {
           this.$Spin.hide();
           vm.schoolName = resp.data.data.schoolName;

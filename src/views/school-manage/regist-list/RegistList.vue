@@ -161,7 +161,7 @@ export default {
           auditStatus: 0,
           currPage: vm.pageIndex,
           pageSize: vm.pageSize
-        })
+        },this)
         .then(resp => {
           this.$Spin.hide();
           vm.list = resp.data.data;

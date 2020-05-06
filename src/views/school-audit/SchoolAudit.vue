@@ -88,7 +88,7 @@ export default {
       http
         .get(api.EXPORTWORDBYSCHOOL, {
           enterTime: TodateTime(this.exportDate)
-        })
+        },this)
         .then(resp => {
           if (resp.data.success) {
             // window.location.href = `http://223.113.1.77:10058${resp.data.data}`;
