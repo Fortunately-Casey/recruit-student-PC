@@ -571,7 +571,7 @@ export default {
           vm.alternativeSchoolID = Number(res.alternativeSchoolID);
           vm.streetId = res.smallCommunity.streetID;
           vm.communityId = res.smallCommunity.communityID;
-          if (this.schoolID == 4 || this.schoolID == 1) {
+          if (res.schoolCode == "0401") {
             this.isDisableHasHouse = true;
             this.isShowAlternative = true;
             this.hasHouse = "是";
@@ -715,7 +715,7 @@ export default {
             this.schoolName = resp.data.data.schoolName;
             this.schoolLabel = resp.data.data.label;
             this.schoolID = resp.data.data.schoolID;
-            if (this.schoolID == 4 || this.schoolID == 1) {
+            if (resp.data.data.schoolCode == "0401") {
               this.isDisableHasHouse = true;
               this.isShowAlternative = true;
               this.hasHouse = "是";

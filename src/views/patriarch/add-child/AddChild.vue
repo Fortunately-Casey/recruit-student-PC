@@ -570,16 +570,13 @@ export default {
           vm.alternativeSchoolID = Number(res.alternativeSchoolID);
           vm.streetId = res.smallCommunity.streetID;
           vm.communityId = res.smallCommunity.communityID;
-          if (this.schoolID == 4 || this.schoolID == 1) {
+          if (res.schoolCode == "0401") {
             this.isDisableHasHouse = true;
             this.isShowAlternative = true;
             this.hasHouse = "是";
           } else {
             this.isShowAlternative = false;
             this.isDisableHasHouse = false;
-          }
-          if (vm.alternativeSchoolID) {
-            vm.isShowAlternative = true;
           }
           if (vm.streetId) {
             this.spinShow1 = true;
@@ -657,13 +654,18 @@ export default {
           parentID: vm.provinceID
         })
         .then(resp => {
-          this.spinShow = false;
+          vm.spinShow = false;
           vm.cityList = resp.data.data;
+          vm.areaID = "";
+          vm.streetList = [];
         });
     },
     // 选择市
     seletcCity(value) {
       let vm = this;
+      if (!value) {
+        return;
+      }
       this.spinShow = true;
       this.cityName = value.label;
       http
@@ -676,6 +678,9 @@ export default {
         });
     },
     seletcStreet(value) {
+      if (!value) {
+        return;
+      }
       this.areaName = value.label;
     },
     // 选择街道
@@ -688,22 +693,33 @@ export default {
         .then(resp => {
           this.spinShow1 = false;
           this.communityList = resp.data.data;
+          this.smallCommunityID = "";
+          this.smallCommunityList = [];
         });
     },
     // 选择社区
     choseCommunity(value) {
       this.spinShow1 = true;
+      if (!value) {
+        this.spinShow1 = false;
+        return;
+      }
       http
         .get(api.GETSMALLCOMMUNITYBYCOMMUNITYID, {
           communityID: value
         })
         .then(resp => {
           this.spinShow1 = false;
+          this.smallCommunityID = "";
           this.smallCommunityList = resp.data.data;
         });
     },
     // 选择小区匹配预选学校
     choseSmallCommunity(value) {
+      if (!value) {
+        this.spinShow1 = false;
+        return;
+      }
       this.smallCommunityName = value.label;
       this.spinShow1 = true;
       http
@@ -717,7 +733,7 @@ export default {
             this.schoolName = resp.data.data.schoolName;
             this.schoolLabel = resp.data.data.label;
             this.schoolID = resp.data.data.schoolID;
-            if (this.schoolID == 4 || this.schoolID == 1) {
+            if (resp.data.data.schoolCode == "0401") {
               this.isDisableHasHouse = true;
               this.isShowAlternative = true;
               this.hasHouse = "是";

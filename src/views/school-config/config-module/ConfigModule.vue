@@ -13,8 +13,9 @@
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               style="width:400px"
+              :disabled="isDisabled"
             ></el-date-picker>
-            <Button type="primary" style="margin-left:20px" @click="commitDate">提交</Button>
+            <Button type="primary" style="margin-left:20px" @click="commitDate" v-if="!isDisabled">提交</Button>
           </div>
         </div>
         <div class="start-time">
@@ -28,11 +29,12 @@
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               style="width:400px"
+              :disabled="isDisabled"
             ></el-date-picker>
-            <Button type="primary" style="margin-left:20px" @click="commitDate">提交</Button>
+            <Button type="primary" style="margin-left:20px" @click="commitDate" v-if="!isDisabled">提交</Button>
           </div>
         </div>
-        <div class="level-config">
+        <div class="level-config" v-if="isShowConfig">
           <div class="header">面谈等级配置</div>
           <div class="levels">
             <div class="label">输入等级</div>
@@ -56,7 +58,7 @@
           </div>
         </div>
       </div>
-      <div class="right">
+      <div class="right" v-if="isShowConfig">
         <div class="relation-config">
           <div class="header">小区学校对应关系配置</div>
           <div class="relation">
@@ -191,8 +193,21 @@ export default {
       },
       streetList: [],
       communityList: [],
-      boundaryList: []
+      boundaryList: [],
+      isShowConfig:false,
+      isDisabled:false
     };
+  },
+  created() {
+    let schoolCode = window.localStorage.getItem('schoolCode');
+    if(schoolCode.length === 4 && schoolCode.indexOf("04") == 0) {
+      this.isDisabled = true;
+    }
+    if(schoolCode == "04") {
+      this.isShowConfig = false;
+    }else {
+      this.isShowConfig = true;
+    }
   },
   mounted() {
     this.$nextTick(function() {
@@ -231,7 +246,7 @@ export default {
       this.$Spin.show();
       http.get(api.GETSCHOOLCONFIG).then(resp => {
         this.$Spin.hide();
-        vm.value1 = [
+        vm.value2 = [
           new Date(
             resp.data.data.school.enterSchoolBeginDate
               ? resp.data.data.school.enterSchoolBeginDate
@@ -243,7 +258,7 @@ export default {
               : ""
           )
         ];
-        vm.value2 = [
+        vm.value1 = [
           new Date(
             resp.data.data.school.birthdayLimitStartDate
               ? resp.data.data.school.birthdayLimitStartDate

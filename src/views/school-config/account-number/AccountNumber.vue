@@ -17,8 +17,14 @@
         <Page :total="total" :page-size="pageSize" :current="currPage" @on-change="changePage" />
       </div>
     </div>
-    <Modal v-model="isShowPassword" title="密码" width="400" footer-hide>
-      <p>{{password}}</p>
+    <Modal v-model="isShowPassword" title="密码" width="400">
+      <!-- <p>{{password}}</p> -->
+      <Input v-model="newPassword" placeholder="请输入要修改的密码" />
+      <Input v-model="confirmPassword" placeholder="确认密码" style="margin-top:10px"/>
+      <div slot="footer">
+        <Button type="text" size="large" @click="isShowPassword=false">取消</Button>
+        <Button type="primary" size="large" @click="commitEdit">确定</Button>
+      </div>
     </Modal>
   </div>
 </template>
@@ -31,6 +37,9 @@ export default {
     return {
       isShowPassword: false,
       password: "",
+      newPassword: "",
+      confirmPassword: "",
+      adminUserID:"",
       columns: [
         {
           title: "序号",
@@ -68,16 +77,16 @@ export default {
                     }
                   }
                 },
-                "查看密码"
+                "修改密码"
               )
             ]);
           }
         }
       ],
-      formInline:{  
-        adminUser:""
+      formInline: {
+        adminUser: ""
       },
-      ruleInline:{},
+      ruleInline: {},
       currPage: 1,
       pageSize: 10,
       total: 0,
@@ -104,7 +113,9 @@ export default {
         });
     },
     showDetail(params) {
+      // console.log(params.row)
       this.password = params.row.password;
+      this.adminUserID = params.row.adminUserID;
       this.isShowPassword = true;
     },
     search() {
@@ -119,6 +130,27 @@ export default {
     changePage(page) {
       this.currPage = page;
       this.getParentAccountBySchoolID();
+    },
+    commitEdit() {
+      let vm = this;
+      if(!vm.newPassword || !vm.confirmPassword) {
+        this.$Message.warning('请输入要修改的密码');
+        return;
+      }
+      this.$Spin.show();
+      http.post(api.PARENTACCOUNTCONFIG,{
+        adminUserID:vm.adminUserID,
+        password:vm.newPassword,
+        confirmPassword:vm.confirmPassword
+      }).then((resp) => {
+        this.$Spin.hide();
+        if(resp.data.success) {
+          this.$Message.success("修改成功！");
+          vm.isShowPassword = false;
+        }else {
+          this.$Message.error(resp.data.message);
+        }
+      })
     }
   }
 };

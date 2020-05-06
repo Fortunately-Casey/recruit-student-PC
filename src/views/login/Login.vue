@@ -4,10 +4,10 @@
     <div class="login-content">
       <div class="login-logo"></div>
       <div class="login-box">
-        <div class="title">{{isShowLogin?"登录":'填写注册信息'}}</div>
+        <div class="title">{{isShowLogin?"您好，请登录":'填写注册信息'}}</div>
         <div class="login-module" v-if="isShowLogin">
           <div class="user">
-            <div class="name">手机号码：</div>
+            <div class="name">账号：</div>
             <input type="text" v-model="userID" />
           </div>
           <div class="password">
@@ -68,10 +68,10 @@ export default {
   created() {
     let username = window.localStorage.getItem("username");
     let password = window.localStorage.getItem("password");
-    if(username) {
+    if (username) {
       this.userID = username;
     }
-    if(password) {
+    if (password) {
       this.password = password;
     }
   },
@@ -100,6 +100,7 @@ export default {
               content: "登录成功"
             });
             window.localStorage.setItem("token", resp.data.data.token);
+            window.localStorage.setItem("schoolCode", resp.data.data.schoolCode);
             window.localStorage.setItem("username", vm.userID);
             window.localStorage.setItem("password", vm.password);
             window.localStorage.setItem(
@@ -150,6 +151,7 @@ export default {
         };
         http.post(api.REGISTERED, params).then(resp => {
           if (resp.data.success) {
+            this.$Spin.hide();
             this.$Message["success"]({
               background: true,
               content: "注册成功"
