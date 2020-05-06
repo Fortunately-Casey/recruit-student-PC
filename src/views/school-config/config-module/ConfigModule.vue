@@ -515,7 +515,7 @@ export default {
             margin-top: 10px;
             flex-wrap: wrap;
             .level-item {
-              width: 80px;
+              min-width: 80px;
               height: 38px;
               background: #ffffff;
               border: 1px solid #ccd4df;

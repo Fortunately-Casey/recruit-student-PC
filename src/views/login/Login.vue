@@ -92,7 +92,7 @@ export default {
           password: vm.password,
           type: 2
         };
-        http.post(api.Login, params,this).then(resp => {
+        http.post(api.Login, params, this).then(resp => {
           this.$Spin.hide();
           if (resp.data.success) {
             this.$Message["success"]({
@@ -100,7 +100,10 @@ export default {
               content: "登录成功"
             });
             window.localStorage.setItem("token", resp.data.data.token);
-            window.localStorage.setItem("schoolCode", resp.data.data.schoolCode);
+            window.localStorage.setItem(
+              "schoolCode",
+              resp.data.data.schoolCode
+            );
             window.localStorage.setItem("username", vm.userID);
             window.localStorage.setItem("password", vm.password);
             window.localStorage.setItem(
@@ -149,9 +152,9 @@ export default {
           password: vm.registerPW,
           confirmPassword: vm.confirmPW
         };
-        http.post(api.REGISTERED, params,this).then(resp => {
+        http.post(api.REGISTERED, params, this).then(resp => {
+          this.$Spin.hide();
           if (resp.data.success) {
-            this.$Spin.hide();
             this.$Message["success"]({
               background: true,
               content: "注册成功"

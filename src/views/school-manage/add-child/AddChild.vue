@@ -556,7 +556,7 @@ export default {
           vm.lastSchoolName = res.preSchoolInformation
             ? res.preSchoolInformation
             : res.primarySchoolName;
-          vm.schoolLabel = res.school.label;
+          vm.schoolLabel = res.school?res.school.label:"";
           vm.parents = res.parents;
           vm.hasHouse = res.property ? "是" : "否";
           vm.houseNature = res.houseNature;
@@ -574,8 +574,8 @@ export default {
           vm.otherRemark = res.otherRemark;
           vm.alternativeSchoolName = res.alternativeSchoolName;
           vm.alternativeSchoolID = Number(res.alternativeSchoolID);
-          vm.streetId = res.smallCommunity.streetID;
-          vm.communityId = res.smallCommunity.communityID;
+          vm.streetId = res.smallCommunity?res.smallCommunity.streetID:'';
+          vm.communityId = res.smallCommunity?res.smallCommunity.communityID:"";
           if (res.schoolCode == "0401") {
             this.isDisableHasHouse = true;
             this.isShowAlternative = true;
@@ -933,8 +933,8 @@ export default {
       };
       this.$Spin.show();
       http.post(api.SAVEANDCOMMIT, params, this).then(resp => {
+        this.$Spin.hide();
         if (resp.data.success) {
-          this.$Spin.hide();
           if (commit) {
             vm.forecastCode = resp.data.data.forecastCode;
             vm.isShowSuccess = true;

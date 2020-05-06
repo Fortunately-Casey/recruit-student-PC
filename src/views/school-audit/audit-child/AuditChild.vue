@@ -610,7 +610,7 @@ export default {
           vm.lastSchoolName = res.preSchoolInformation
             ? res.preSchoolInformation
             : res.primarySchoolName;
-          vm.schoolLabel = res.school.label;
+          vm.schoolLabel = res.school ? res.school.label : "";
           vm.parents = res.parents;
           vm.hasHouse = res.property ? "是" : "否";
           vm.houseNature = res.houseNature;
@@ -628,8 +628,10 @@ export default {
           vm.otherRemark = res.otherRemark;
           vm.alternativeSchoolName = res.alternativeSchoolName;
           vm.alternativeSchoolID = Number(res.alternativeSchoolID);
-          vm.streetId = res.smallCommunity.streetID;
-          vm.communityId = res.smallCommunity.communityID;
+          vm.streetId = res.smallCommunity ? res.smallCommunity.streetID : "";
+          vm.communityId = res.smallCommunity
+            ? res.smallCommunity.communityID
+            : "";
           vm.auditRemark = res.auditRemark;
           vm.crossIndex = res.auditStatus == 0 ? 0 : res.auditStatus - 1;
           vm.levelID = res.levelID;
@@ -1336,7 +1338,7 @@ export default {
             display: flex;
             position: relative;
             .level-item {
-              width: 60px;
+              min-width: 60px;
               height: 35px;
               background: #ffffff;
               border: 1px solid #ccd4df;

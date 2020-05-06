@@ -505,24 +505,27 @@ export default {
       isDisableHasHouse: false
     };
   },
-  mounted() {
-    this.$nextTick(function() {
-      this.getProvinceArea();
-      this.getStreetList();
-      this.getSchoolList();
-      if (this.$route.query.id) {
-        this.getStudentDetail(this.$route.query.id);
-      }
-    });
+  created() {
+    this.getProvinceArea();
+    this.getStreetList();
+    this.getSchoolList();
+    if (this.$route.query.id) {
+      this.getStudentDetail(this.$route.query.id);
+    }
   },
+  mounted() {},
   methods: {
     getStudentDetail(id) {
       let vm = this;
       this.$Spin.show();
       http
-        .get(api.GETSTUDENTDETAIL, {
-          ID: id
-        },this)
+        .get(
+          api.GETSTUDENTDETAIL,
+          {
+            ID: id
+          },
+          this
+        )
         .then(resp => {
           this.$Spin.hide();
           let res = resp.data.data;
@@ -551,7 +554,7 @@ export default {
           vm.lastSchoolName = res.preSchoolInformation
             ? res.preSchoolInformation
             : res.primarySchoolName;
-          vm.schoolLabel = res.school.label;
+          vm.schoolLabel = res.school ? res.school.label : "";
           vm.parents = res.parents;
           vm.hasHouse = res.property ? "是" : "否";
           vm.houseNature = res.houseNature;
@@ -569,8 +572,10 @@ export default {
           vm.otherRemark = res.otherRemark;
           vm.alternativeSchoolName = res.alternativeSchoolName;
           vm.alternativeSchoolID = Number(res.alternativeSchoolID);
-          vm.streetId = res.smallCommunity.streetID;
-          vm.communityId = res.smallCommunity.communityID;
+          vm.streetId = res.smallCommunity ? res.smallCommunity.streetID : "";
+          vm.communityId = res.smallCommunity
+            ? res.smallCommunity.communityID
+            : "";
           if (res.schoolCode == "0401") {
             this.isDisableHasHouse = true;
             this.isShowAlternative = true;
@@ -582,9 +587,13 @@ export default {
           if (vm.streetId) {
             this.spinShow1 = true;
             http
-              .get(api.GETCOMMUNITYLIST, {
-                streetID: vm.streetId
-              },this)
+              .get(
+                api.GETCOMMUNITYLIST,
+                {
+                  streetID: vm.streetId
+                },
+                this
+              )
               .then(resp => {
                 this.spinShow1 = false;
                 this.communityList = resp.data.data;
@@ -593,9 +602,13 @@ export default {
           if (vm.communityId) {
             this.spinShow1 = true;
             http
-              .get(api.GETSMALLCOMMUNITYBYCOMMUNITYID, {
-                communityID: vm.communityId
-              },this)
+              .get(
+                api.GETSMALLCOMMUNITYBYCOMMUNITYID,
+                {
+                  communityID: vm.communityId
+                },
+                this
+              )
               .then(resp => {
                 this.spinShow1 = false;
                 this.smallCommunityList = resp.data.data;
@@ -603,9 +616,13 @@ export default {
           }
           if (vm.provinceID) {
             http
-              .get(api.GETCITYLIST, {
-                parentID: vm.provinceID
-              },this)
+              .get(
+                api.GETCITYLIST,
+                {
+                  parentID: vm.provinceID
+                },
+                this
+              )
               .then(resp => {
                 this.spinShow = false;
                 vm.cityList = resp.data.data;
@@ -613,9 +630,13 @@ export default {
           }
           if (vm.cityID) {
             http
-              .get(api.GETCITYLIST, {
-                parentID: vm.cityID
-              },this)
+              .get(
+                api.GETCITYLIST,
+                {
+                  parentID: vm.cityID
+                },
+                this
+              )
               .then(resp => {
                 this.spinShow = false;
                 vm.streetList = resp.data.data;
@@ -651,9 +672,13 @@ export default {
       this.spinShow = true;
       this.provincesName = value.label;
       http
-        .get(api.GETCITYLIST, {
-          parentID: vm.provinceID
-        },this)
+        .get(
+          api.GETCITYLIST,
+          {
+            parentID: vm.provinceID
+          },
+          this
+        )
         .then(resp => {
           vm.spinShow = false;
           vm.cityList = resp.data.data;
@@ -670,9 +695,13 @@ export default {
       this.spinShow = true;
       this.cityName = value.label;
       http
-        .get(api.GETCITYLIST, {
-          parentID: vm.cityID
-        },this)
+        .get(
+          api.GETCITYLIST,
+          {
+            parentID: vm.cityID
+          },
+          this
+        )
         .then(resp => {
           this.spinShow = false;
           vm.streetList = resp.data.data;
@@ -688,9 +717,13 @@ export default {
     choseStreet(value) {
       this.spinShow1 = true;
       http
-        .get(api.GETCOMMUNITYLIST, {
-          streetID: value
-        },this)
+        .get(
+          api.GETCOMMUNITYLIST,
+          {
+            streetID: value
+          },
+          this
+        )
         .then(resp => {
           this.spinShow1 = false;
           this.communityList = resp.data.data;
@@ -706,9 +739,13 @@ export default {
         return;
       }
       http
-        .get(api.GETSMALLCOMMUNITYBYCOMMUNITYID, {
-          communityID: value
-        },this)
+        .get(
+          api.GETSMALLCOMMUNITYBYCOMMUNITYID,
+          {
+            communityID: value
+          },
+          this
+        )
         .then(resp => {
           this.spinShow1 = false;
           this.smallCommunityID = "";
@@ -724,10 +761,14 @@ export default {
       this.smallCommunityName = value.label;
       this.spinShow1 = true;
       http
-        .get(api.GETSCHOOLBYSMALLCOMMUNITYID, {
-          smallCommunityID: this.smallCommunityID,
-          birthday: this.todate(this.birthday)
-        },this)
+        .get(
+          api.GETSCHOOLBYSMALLCOMMUNITYID,
+          {
+            smallCommunityID: this.smallCommunityID,
+            birthday: this.todate(this.birthday)
+          },
+          this
+        )
         .then(resp => {
           this.spinShow1 = false;
           if (resp.data.data) {
@@ -750,10 +791,14 @@ export default {
     birthdayChange() {
       if (this.smallCommunityID) {
         http
-          .get(api.GETSCHOOLBYSMALLCOMMUNITYID, {
-            smallCommunityID: this.smallCommunityID,
-            birthday: this.todate(this.birthday)
-          },this)
+          .get(
+            api.GETSCHOOLBYSMALLCOMMUNITYID,
+            {
+              smallCommunityID: this.smallCommunityID,
+              birthday: this.todate(this.birthday)
+            },
+            this
+          )
           .then(resp => {
             this.spinShow1 = false;
             if (resp.data.data) {
@@ -888,8 +933,8 @@ export default {
       };
       this.$Spin.show();
       http.post(api.SAVEANDCOMMIT, params, this).then(resp => {
+        this.$Spin.hide();
         if (resp.data.success) {
-          this.$Spin.hide();
           if (commit) {
             vm.forecastCode = resp.data.data.forecastCode;
             vm.isShowSuccess = true;
