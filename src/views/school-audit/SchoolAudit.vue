@@ -72,7 +72,7 @@ export default {
       let routeName = this.$route.name;
       let tabIndex;
       switch (routeName) {
-        case "schoolAdd":
+        case "auditChild":
           tabIndex = 2;
           break;
         case "auditList":
@@ -85,10 +85,18 @@ export default {
       this.tabIndex = tabIndex;
     },
     exportWordBySchool() {
+      if (!this.exportDate) {
+        this.$Message.warning("请选择入学时间！");
+        return;
+      }
       http
-        .get(api.EXPORTWORDBYSCHOOL, {
-          enterTime: TodateTime(this.exportDate)
-        },this)
+        .get(
+          api.EXPORTWORDBYSCHOOL,
+          {
+            enterTime: TodateTime(this.exportDate)
+          },
+          this
+        )
         .then(resp => {
           if (resp.data.success) {
             // window.location.href = `http://223.113.1.77:10058${resp.data.data}`;

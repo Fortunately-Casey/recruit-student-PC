@@ -371,7 +371,7 @@
       </p>
       <p>确认要保存该学生的信息吗？</p>
     </Modal>
-    <Modal v-model="isShowSuccess" footer-hide width="300">
+    <Modal v-model="isShowSuccess" footer-hide width="300" @on-cancel="closeNumber">
       <p slot="header" style="color:#fff;text-align:left">
         <Icon type="md-checkmark-circle" size="25" />
         <span>&nbsp;提交成功！</span>
@@ -398,7 +398,7 @@ export default {
       isShowSuccess: false,
       name: "",
       idCard: "",
-      sex: "",
+      sex: "男",
       birthday: "",
       provinceID: "",
       provincesName: "",
@@ -646,6 +646,11 @@ export default {
           }
         });
     },
+    closeNumber() {
+      this.$router.push({
+        path: "/schoolManage/registList"
+      });
+    },
     // 获取备选学校
     getSchoolList() {
       http.get(api.GETSCHOOLLIST, {}, this).then(resp => {
@@ -792,6 +797,9 @@ export default {
               this.isDisableHasHouse = false;
             }
           } else {
+            this.schoolName = "";
+            this.isShowAlternative = false;
+            this.alternativeSchoolID = "";
             this.$Message.warning("未匹配到预报名学校！");
           }
         });
@@ -857,7 +865,7 @@ export default {
         this.$Message.warning("请填写完整的学生信息！");
         return;
       }
-      if (vm.schoolName === "实验小学") {
+      if (vm.isShowAlternative) {
         if (!vm.alternativeSchoolName) {
           this.$Message.warning("请填写备选学校！");
           return;
@@ -878,15 +886,15 @@ export default {
         this.$Message.warning("请填写完整的学前信息！");
         return;
       }
-      if (!vm.otherRemark) {
-        this.$Message.warning("请填写完整的其他信息！");
-        return;
-      }
       if (
-        !vm.parents[0].idCard ||
-        !vm.parents[0].linkPhone ||
-        !vm.parents[0].name ||
-        !vm.parents[0].workAddress
+        (!vm.parents[0].idCard ||
+          !vm.parents[0].linkPhone ||
+          !vm.parents[0].name ||
+          !vm.parents[0].workAddress) &&
+        (!vm.parents[1].idCard ||
+          !vm.parents[1].linkPhone ||
+          !vm.parents[1].name ||
+          !vm.parents[1].workAddress)
       ) {
         this.$Message.warning("至少填写一个完整的家长信息！");
         return;

@@ -54,7 +54,7 @@ export default {
   right: 0;
   top: 0;
   .user {
-    width: 300px;
+    width: 340px;
     height: 60px;
     position: absolute;
     right: 30px;
@@ -62,9 +62,9 @@ export default {
     transform: translateY(-50%);
     display: flex;
     .info {
-      width: 200px;
+      width: 240px;
       .name {
-        width: 200px;
+        width: 240px;
         padding-right: 10px;
         height: 30px;
         line-height: 30px;
@@ -74,7 +74,7 @@ export default {
         font-weight: bold;
       }
       .type {
-        width: 200px;
+        width: 240px;
         padding-right: 10px;
         height: 30px;
         line-height: 30px;

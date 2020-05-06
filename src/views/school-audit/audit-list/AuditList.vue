@@ -109,6 +109,18 @@ export default {
           }
         },
         {
+          title: "审核状态",
+          key: "auditStatus",
+          align: "center",
+          render: (h, params) => {
+            return h("div", [h("span",{
+              style:{
+                color:params.row.auditStatus === 1 ? "#48BB78" : "#F56565"
+              }
+            }, params.row.auditStatus === 1 ? "通过" : "不通过")]);
+          }
+        },
+        {
           title: "操作",
           key: "option",
           align: "center",
