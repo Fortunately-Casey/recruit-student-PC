@@ -130,7 +130,7 @@ export default {
           },
           axisLabel: {
             color: "#728096",
-            rotate: 30
+            rotate: 18
           },
           axisLine: {
             lineStyle: {
@@ -267,7 +267,7 @@ export default {
           },
           axisLabel: {
             color: "#728096",
-            rotate: 30
+            rotate: 18
           },
           axisLine: {
             lineStyle: {
@@ -417,6 +417,8 @@ export default {
       #chart2,
       #chart3,
       #chart4 {
+        padding-bottom: 10px;
+        box-sizing: border-box;
         flex: 1;
       }
       .header {

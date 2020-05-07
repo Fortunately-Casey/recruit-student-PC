@@ -78,8 +78,7 @@ export default {
     exportExcel() {
       http.get(api.EXPORTSTUDENTBYONEORMORE,{},this).then(resp => {
         if (resp.data.success) {
-          // window.location.href = `http://223.113.1.77:10058${resp.data.data}`;
-          console.log(`http://223.113.1.77:10058${resp.data.data}`);
+          window.location.href = resp.data.message;
           this.isShowExport = false;
         } else {
           this.$Message.warning(resp.data.message);

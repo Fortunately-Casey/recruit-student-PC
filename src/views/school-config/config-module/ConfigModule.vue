@@ -38,7 +38,7 @@
           <div class="header">面谈等级配置</div>
           <div class="levels">
             <div class="label">输入等级</div>
-            <Input v-model="sort" size="large" style="width:80px" type="number" placeholder="等级" />
+            <Input v-model="sort" size="large" style="width:80px" type="number" placeholder="排序" />
             <div class="add-input">
               <Input
                 v-model="level"

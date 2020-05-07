@@ -12,6 +12,7 @@
           <Input v-model="url" style="width:100%" placeholder="输入链接" />
         </div>
       </div>
+      <div class="confirm-button" @click="confirm">提交</div>
     </div>
     <div class="success-box" v-if="isShowSuccess">
       <div class="success-icon"></div>
@@ -29,7 +30,7 @@
         <div class="back" @click="back">返回文章列表</div>
       </div>
     </div>
-    <div class="confirm-button" @click="confirm">提交</div>
+    <!-- <div class="confirm-button" @click="confirm">提交</div> -->
   </div>
 </template>
 
@@ -102,7 +103,7 @@ export default {
   .add-box {
     margin-top: 40px;
     width: 790px;
-    height: 210px;
+    height: 250px;
     background: #ffffff;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
     .header {
@@ -216,10 +217,11 @@ export default {
     color: #fff;
     text-align: center;
     line-height: 40px;
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
+    // position: absolute;
+    // bottom: 20px;
+    // left: 50%;
+    // transform: translateX(-50%);
+    margin: 20px auto;
     font-size: 16px;
     cursor: pointer;
     letter-spacing: 10px;

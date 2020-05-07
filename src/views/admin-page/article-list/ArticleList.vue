@@ -24,8 +24,8 @@
       <div style="text-align:center">
         <p>确认是否删除该条新闻?</p>
       </div>
-      <div slot="footer">
-        <Button type="error" size="large" long @click="commitDelete">删除</Button>
+      <div slot="footer" style="text-align:center">
+        <Button type="error" size="large" @click="commitDelete">删除</Button>
       </div>
     </Modal>
     <Modal v-model="isShowEdit" title="新闻编辑" @on-cancel="cancel">
@@ -198,7 +198,7 @@ export default {
         .post(api.UPDATENEWSCONFIG, {
           id: vm.formItem.id,
           title: vm.formItem.title,
-          titleUrl: vm.formItem.titleUrl
+          titleUrl: vm.formItem.url
         },this)
         .then(resp => {
           if (resp.data.success) {

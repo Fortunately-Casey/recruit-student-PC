@@ -391,6 +391,7 @@
               </div>
               <Input
                 style="width:300px;transform:translateY(2px)"
+                maxlength="15"
                 placeholder="理由"
                 v-model="auditRemark"
                 :disabled="isDisabled"

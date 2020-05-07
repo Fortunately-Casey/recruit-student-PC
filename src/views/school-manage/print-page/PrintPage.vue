@@ -78,12 +78,12 @@
       新河校区打分
       <div class="next-school">
         <div class="name">第二校区选择：</div>
-        <div class="school"></div>
+        <div class="school">{{alternativeSchoolName}}</div>
       </div>
     </div>
     <div class="grade-table">
       <div class="top" v-if="isShowAlternative">
-        <div class="left-name">打分自评</div>
+        <div class="left-name" style="border-left:1px solid #000">打分自评</div>
         <div class="content">
           <div class="one">
             <div class="house">房产</div>
@@ -113,17 +113,17 @@
             <div class="four-bottom"></div>
           </div>
           <div class="five">合计</div>
-          <div class="six"></div>
+          <div class="six" style="border-right:1px solid #000"></div>
         </div>
       </div>
       <div class="bottom" v-if="isShowAlternative">
-        <div class="school-audit">学校审核</div>
+        <div class="school-audit" style="border-left:1px solid #000">学校审核</div>
         <div class="one">房产得分</div>
         <div class="two"></div>
         <div class="three">户口得分</div>
-        <div class="four"></div>
+        <div class="four" style="width:180px"></div>
         <div class="five">合计</div>
-        <div class="six"></div>
+        <div class="six" style="border-right:1px solid #000;flex:1"></div>
       </div>
       <div class="commitment-box1" v-if="isShowAlternative">
         <div class="one">
@@ -177,6 +177,7 @@ export default {
       laborContractPeriod:"",
       permitResidencePeriod:"",
       pensionUnitsAddress:"",
+      alternativeSchoolName:"",
       parents: [
         {
           sort: 1,
@@ -231,6 +232,7 @@ export default {
           vm.laborContractPeriod = resp.data.data.laborContractPeriod;
           vm.pensionUnitsAddress = resp.data.data.pensionUnitsAddress;
           vm.permitResidencePeriod = resp.data.data.permitResidencePeriod;
+          vm.alternativeSchoolName = resp.data.data.alternativeSchoolName;
           if(resp.data.data.school.schoolCode  != '0401') {
             vm.isShowAlternative = false;
           }else {
@@ -404,6 +406,8 @@ export default {
       .school {
         flex: 1;
         border-bottom: 1px solid #000;
+        line-height: 25px;
+        font-size: 22px;
       }
     }
   }
