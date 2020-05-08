@@ -580,7 +580,12 @@ export default {
             this.isDisableHasHouse = true;
             this.isShowAlternative = true;
             this.hasHouse = "是";
-          } else if (res.school.schoolCode == "01") {
+          } else if (
+            res.school.schoolCode == "01" ||
+            res.school.schoolCode == "0402" ||
+            res.school.schoolCode == "0403" ||
+            res.school.schoolCode == "0404"
+          ) {
             this.isDisableHasHouse = true;
             this.isShowAlternative = false;
             this.hasHouse = "是";
@@ -794,7 +799,12 @@ export default {
               this.isDisableHasHouse = true;
               this.isShowAlternative = true;
               this.hasHouse = "是";
-            } else if (resp.data.data.schoolCode == "01") {
+            } else if (
+              resp.data.data.schoolCode == "01" ||
+              resp.data.data.schoolCode == "0402" ||
+              resp.data.data.schoolCode == "0403" ||
+              resp.data.data.schoolCode == "0404"
+            ) {
               this.isDisableHasHouse = true;
               this.isShowAlternative = false;
               this.hasHouse = "是";
@@ -831,7 +841,12 @@ export default {
                 this.isDisableHasHouse = true;
                 this.isShowAlternative = true;
                 this.hasHouse = "是";
-              } else if (resp.data.data.schoolCode == "01") {
+              } else if (
+                resp.data.data.schoolCode == "01" ||
+                resp.data.data.schoolCode == "0402" ||
+                resp.data.data.schoolCode == "0403" ||
+                resp.data.data.schoolCode == "0404"
+              ) {
                 this.isDisableHasHouse = true;
                 this.isShowAlternative = false;
                 this.hasHouse = "是";

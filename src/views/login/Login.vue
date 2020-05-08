@@ -82,6 +82,7 @@ export default {
       if (this.isShowLogin) {
         let vm = this;
         if (!vm.userID || !vm.password) {
+          this.$Spin.hide();
           this.$Message["warning"]({
             background: true,
             content: "账号密码不能为空！"

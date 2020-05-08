@@ -200,7 +200,7 @@ export default {
       data.map(v => {
         schoolList.push(v.schoolName);
         hasHouse.push(v.propertyNum);
-        if (v.schoolCode == "0401" || v.schoolCode == "01") {
+        if (v.schoolCode == "0401" ||v.schoolCode == "0402" ||v.schoolCode == "0403" ||v.schoolCode == "0404" || v.schoolCode == "01") {
           noHouse.push(0);
           dateHouse.push(v.otherNum);
         } else {
@@ -220,7 +220,10 @@ export default {
           formatter: function(params) {
             if (
               params[0].name === "南通市东方中学" ||
-              params[0].name === "实小（新河校区）"
+              params[0].name === "实小（新河校区）"||
+              params[0].name === "实小（能达校区）" ||
+              params[0].name === "实小（育才校区）"||
+              params[0].name === "实小（星湖校区）"
             ) {
               return (
                 params[2].name +
