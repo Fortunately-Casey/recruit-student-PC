@@ -34,7 +34,7 @@ export default {
     let vm = this;
     this.$nextTick(function() {
       this.$Spin.show();
-      http.get(api.SHOWSTATISTICINFO,{},this).then(resp => {
+      http.get(api.SHOWSTATISTICINFO, {}, this).then(resp => {
         this.$Spin.hide();
         let res = resp.data.data;
         vm.createStreet(res.streetStatistics);
@@ -200,7 +200,7 @@ export default {
       data.map(v => {
         schoolList.push(v.schoolName);
         hasHouse.push(v.propertyNum);
-        if (v.schoolName === "实验小学" || v.schoolName === "东方小学") {
+        if (v.schoolCode == "0401" || v.schoolCode == "01") {
           noHouse.push(0);
           dateHouse.push(v.otherNum);
         } else {
@@ -210,7 +210,7 @@ export default {
         // dataList
       });
       let option = {
-        color: ["#64B3ED", "#F6AD55", "#ED64A6"],
+        color: ["#ED64A6","#F6AD55", "#64B3ED", ],
         tooltip: {
           trigger: "axis",
           axisPointer: {
@@ -219,30 +219,30 @@ export default {
           },
           formatter: function(params) {
             if (
-              params[0].name === "东方小学" ||
-              params[0].name === "实验小学"
+              params[0].name === "南通市东方中学" ||
+              params[0].name === "实小（新河校区）"
             ) {
               return (
-                params[0].name +
-                "<br/>" +
-                params[0].marker +
-                params[0].seriesName +
-                "：" +
-                params[0].value +
+                params[2].name +
                 "<br/>" +
                 params[2].marker +
                 params[2].seriesName +
                 "：" +
-                params[2].value
-              );
-            } else {
-              return (
-                params[0].name +
+                params[2].value +
                 "<br/>" +
                 params[0].marker +
                 params[0].seriesName +
                 "：" +
-                params[0].value +
+                params[0].value
+              );
+            } else {
+              return (
+                params[2].name +
+                "<br/>" +
+                params[2].marker +
+                params[2].seriesName +
+                "：" +
+                params[2].value +
                 "<br/>" +
                 params[1].marker +
                 params[1].seriesName +
@@ -295,52 +295,25 @@ export default {
         },
         series: [
           {
-            name: "有房",
-            data: hasHouse,
+            name: "期房",
+            data: dateHouse,
             type: "bar",
             stack: "有房",
             barWidth: 20
-            // itemStyle: {
-            //   normal: {
-            //     label: {
-            //       show: true, //开启显示
-            //       position: "top", //在上方显示
-            //       textStyle: {
-            //         //数值样式
-            //         color: "#4A5569",
-            //         fontSize: 14
-            //       }
-            //     }
-            //   }
-            // }
           },
           {
             name: "无房",
             data: noHouse,
             type: "bar",
-            stack: "无房",
+            stack: "有房",
             barWidth: 20
-            // itemStyle: {
-            //   normal: {
-            //     label: {
-            //       show: true, //开启显示
-            //       position: "top", //在上方显示
-            //       textStyle: {
-            //         //数值样式
-            //         color: "#4A5569",
-            //         fontSize: 14
-            //       }
-            //     }
-            //   }
-            // }
           },
           {
-            name: "期房",
-            data: dateHouse,
+            name: "有房",
+            data: hasHouse,
             type: "bar",
-            stack: "期房",
-            barWidth: 20,
-            barGap: "-100%"
+            stack: "有房",
+            barWidth: 20
           }
         ]
       };

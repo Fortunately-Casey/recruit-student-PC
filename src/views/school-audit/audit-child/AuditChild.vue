@@ -556,22 +556,28 @@ export default {
     getLevelList(schoolID) {
       let vm = this;
       this.isShowLevelList = true;
-      http.get(api.GETLISTLEVEL, {
-        schoolID:schoolID
-      }, this).then(resp => {
-        this.isShowLevelList = false;
-        this.levelList = resp.data.data;
-        if (vm.levelID) {
-          vm.levelList.map((v, i) => {
-            if (v.id == vm.levelID) {
-              vm.level = v;
-              vm.chosedLevel = i;
-            }
-          });
-        } else {
-          this.level = resp.data.data[0];
-        }
-      });
+      http
+        .get(
+          api.GETLISTLEVEL,
+          {
+            schoolID: schoolID
+          },
+          this
+        )
+        .then(resp => {
+          this.isShowLevelList = false;
+          this.levelList = resp.data.data;
+          if (vm.levelID) {
+            vm.levelList.map((v, i) => {
+              if (v.id == vm.levelID) {
+                vm.level = v;
+                vm.chosedLevel = i;
+              }
+            });
+          } else {
+            this.level = resp.data.data[0];
+          }
+        });
     },
     getStudentDetail(id) {
       let vm = this;
@@ -642,6 +648,10 @@ export default {
           if (res.school.schoolCode == "0401") {
             this.isDisableHasHouse = true;
             this.isShowAlternative = true;
+            this.hasHouse = "是";
+          } else if (res.school.schoolCode == "01") {
+            this.isDisableHasHouse = true;
+            this.isShowAlternative = false;
             this.hasHouse = "是";
           } else {
             this.isShowAlternative = false;
@@ -861,12 +871,16 @@ export default {
               this.isDisableHasHouse = true;
               this.isShowAlternative = true;
               this.hasHouse = "是";
+            } else if (resp.data.data.schoolCode == "01") {
+              this.isDisableHasHouse = true;
+              this.isShowAlternative = false;
+              this.hasHouse = "是";
             } else {
               this.isShowAlternative = false;
               this.isDisableHasHouse = false;
             }
           } else {
-            this.$Message.warning("未匹配到预报名学校！");
+            this.$Message.warning(resp.data.message);
           }
         });
     },
@@ -891,6 +905,10 @@ export default {
                 this.isDisableHasHouse = true;
                 this.isShowAlternative = true;
                 this.hasHouse = "是";
+              } else if (resp.data.data.schoolCode == "01") {
+                this.isDisableHasHouse = true;
+                this.isShowAlternative = false;
+                this.hasHouse = "是";
               } else {
                 this.isShowAlternative = false;
                 this.isDisableHasHouse = false;
@@ -899,7 +917,7 @@ export default {
               this.schoolName = "";
               this.isShowAlternative = false;
               this.alternativeSchoolID = "";
-              this.$Message.warning("未匹配到预报名学校！");
+              this.$Message.warning(resp.data.message);
             }
           });
       }
