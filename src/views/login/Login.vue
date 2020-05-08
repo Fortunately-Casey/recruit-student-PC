@@ -8,13 +8,14 @@
         <div class="login-module" v-if="isShowLogin">
           <div class="user">
             <div class="name">账号：</div>
-            <input type="text" v-model="userID" />
+            <input type="text" v-model="userID" @keyup.enter='confirm'/>
           </div>
           <div class="password">
             <div class="name">密码：</div>
             <input
               type="text"
               v-model="password"
+              @keyup.enter='confirm'
               style="-webkit-text-security:disc;text-security:disc;"
             />
           </div>
