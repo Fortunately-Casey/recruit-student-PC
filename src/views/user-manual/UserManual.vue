@@ -2,9 +2,20 @@
   <div id="index">
     <m-header></m-header>
     <div class="content">
-      <div class="phone"></div>
+      <Carousel v-model="value1" loop>
+        <CarouselItem>
+          <div class="teacher-pc"></div>
+        </CarouselItem>
+        <CarouselItem>
+          <div class="phone"></div>
+        </CarouselItem>
+        <CarouselItem>
+          <div class="parent-pc">建议使用谷歌浏览器</div>
+        </CarouselItem>
+      </Carousel>
+      <!-- <div class="phone"></div>
       <div class="parent-pc"></div>
-      <div class="teacher-pc"></div>
+      <div class="teacher-pc"></div>-->
     </div>
   </div>
 </template>
@@ -14,13 +25,11 @@ import MHeader from "@/components/Header.vue";
 export default {
   data() {
     return {
-
+      value1: 0
     };
   },
-  mounted() {
-  },
-  methods: {
-  },
+  mounted() {},
+  methods: {},
   components: {
     MHeader
   }
@@ -36,24 +45,29 @@ export default {
   .content {
     background-color: #fff;
     flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    width: 80%;
+    margin: 0 auto;
+    // display: flex;
+    // flex-direction: column;
+    // align-items: center;
+
     .phone {
-      width: 1396px;
-      height: 832px;
+      width: 100%;
+      height: 800px;
       background: url("../../assets/image/phone.png") no-repeat;
       background-size: 100% 100%;
     }
     .parent-pc {
-      width: 1562px;
-      height: 920px;
+      width: 100%;
+      height: 800px;
       background: url("../../assets/image/parent-pc.png") no-repeat;
       background-size: 100% 100%;
+      font-size:20px;
+      color: red;
     }
     .teacher-pc {
-      width: 1539px;
-      height: 894px;
+      width: 100%;
+      height: 800px;
       background: url("../../assets/image/teacher-pc.png") no-repeat;
       background-size: 100% 100%;
     }

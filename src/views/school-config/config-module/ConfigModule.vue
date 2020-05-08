@@ -336,6 +336,8 @@ export default {
               background: true,
               content: "新增成功"
             });
+            vm.level = "";
+            vm.sort = "";
             this.getConfig();
           } else {
             this.$Message["error"]({
