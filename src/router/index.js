@@ -24,6 +24,14 @@ const routes = [{
     component: resolve => require(['../views/login/Login.vue'], resolve)
   },
   {
+    path: '/userManual', //用户手册
+    name: 'userManual',
+    meta:{
+      requireAuth:false
+    },
+    component: resolve => require(['../views/user-manual/UserManual.vue'], resolve)
+  },
+  {
     path: '/patriarch', //家长报名
     component: resolve => require(['../views/patriarch/Patriarch.vue'], resolve),
     children: [{

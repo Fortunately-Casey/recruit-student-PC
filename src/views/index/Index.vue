@@ -48,7 +48,7 @@
         <!-- <div class="item">
           <div class="title2"></div>
           <div class="logo1"></div>
-        </div> -->
+        </div>-->
         <div class="item" @click="toLogin">
           <div class="title3"></div>
           <div class="logo2"></div>
@@ -57,7 +57,7 @@
           <div class="title4"></div>
           <div class="logo3"></div>
         </div>
-        <div class="item">
+        <div class="item" @click="toUserManual">
           <div class="title5"></div>
           <div class="logo4"></div>
         </div>
@@ -86,11 +86,15 @@ export default {
     getNewsList() {
       this.$Spin.show();
       http
-        .post(api.GETNEWSLIST, {
-          currPage: 1,
-          pageSize: 100,
-          title: ""
-        },this)
+        .post(
+          api.GETNEWSLIST,
+          {
+            currPage: 1,
+            pageSize: 100,
+            title: ""
+          },
+          this
+        )
         .then(resp => {
           this.$Spin.hide();
           this.newsList = resp.data.data;
@@ -101,6 +105,9 @@ export default {
       //   path: "/login"
       // });
       window.open(`${window.location.origin}/login`);
+    },
+    toUserManual() {
+      window.open(`${window.location.origin}/userManual`);
     },
     toNews(item) {
       window.open(item.titleUrl);
